@@ -1,100 +1,84 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+    <title>:: Soccer :: Login</title>
 
-            .full-height {
-                height: 100vh;
-            }
+    <!-- Bootstrap Core and vandor -->
+    <link rel="stylesheet" href="{{asset('public/assets/plugins/bootstrap/css/bootstrap.min.css')}}" />
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+    <!-- Core css -->
+    <link rel="stylesheet" href="{{asset('public/assets/css/main.css')}}"/>
+    <link rel="stylesheet" href="{{asset('public/assets/css/theme1.css')}}"/>
+    <link rel="stylesheet" href="{{asset('public/assets/css/font-awesome.min.css')}}"/>
 
-            .position-ref {
-                position: relative;
-            }
+</head>
+<body class="font-montserrat">
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
+<div class="auth">
+    <div class="auth_left">
+        <div class="card">
+            <div class="text-center mb-2">
+                {{--<a class="header-brand" href="index.html"><i class="fa fa-soccer-ball-o brand-logo"></i></a>--}}
+            </div>
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="card-body">
+                    <h3>Work Better, Together</h3>
+                    <p style="color: #333; font-size: 14px;">The easiest way to get your work done.
+                        Share tasks, projects and files with anyone you work with.</p>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" aria-describedby="emailHelp" placeholder="example@example.com" value="{{ old('email') }}" required autocomplete="email" autofocus>
 
-            .content {
-                text-align: center;
-            }
+                        @error('email')
+                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                        @enderror
 
-            .title {
-                font-size: 84px;
-            }
+                    </div>
 
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
+                    <div class="form-group">
+                        <label class="form-label">Password<a href="forgot-password.html" class="float-right small">I forgot password</a></label>
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="******" required autocomplete="current-password">
 
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+                        @error('password')
+                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                        @enderror
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
+                    </div>
+
+                    <div class="form-group">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}/>
+                            <span class="custom-control-label">Remember me</span>
+                        </label>
+                    </div>
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary btn-block" >Sign in</button>
+                    </div>
                 </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+            </form>
+            <div class="text-center text-muted">
+                {{--Don't have account yet? <a href="register.html">Sign up</a>--}}
             </div>
         </div>
-    </body>
+    </div>
+    <div class="auth_right full_img"></div>
+</div>
+
+<script src="{{asset('public/assets/bundles/lib.vendor.bundle.js')}}"></script>
+<script src="{{asset('public/assets/js/core.js')}}"></script>
+</body>
+
+<!-- Mirrored from puffintheme.com/craft/soccer/project/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 18 Feb 2020 17:22:18 GMT -->
 </html>

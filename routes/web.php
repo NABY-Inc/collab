@@ -19,4 +19,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::prefix('admin')->middleware(['auth'])->group(function(){
+    Route::get('/', 'adminController@index')->name('admin.index');
+    Route::resource('systemUsers', 'systemUsersController');
+    Route::resource('project', 'projectController');
+    Route::resource('task', 'taskController');
+});
+
+Route::get('/home', function (){
+    switch (auth()->user()->role){
+        case 1:
+            return redirect(route('admin.index'));
+        break;
+        case 2:
+            return redirect(route('user.index'));
+        break;
+        default:
+            return abort(404);
+            breeak;
+    }
+})->name('home');
