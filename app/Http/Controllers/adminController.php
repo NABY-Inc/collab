@@ -8,7 +8,8 @@ class adminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        $systemUsers = 'App\User'::orderBy('id','desc')->get();
+        return view('admin.dashboard', compact('systemUsers'));
     }
 
     public function project()

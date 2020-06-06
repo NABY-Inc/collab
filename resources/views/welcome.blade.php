@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Password<a href="forgot-password.html" class="float-right small">I forgot password</a></label>
+                        <label class="form-label">Password</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="******" required autocomplete="current-password">
 
                         @error('password')
@@ -57,12 +57,12 @@
 
                     </div>
 
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}/>
                             <span class="custom-control-label">Remember me</span>
                         </label>
-                    </div>
+                    </div> --}}
                     <div class="form-footer">
                         <button type="submit" class="btn btn-primary btn-block" >Sign in</button>
                     </div>
@@ -80,5 +80,4 @@
 <script src="{{asset('public/assets/js/core.js')}}"></script>
 </body>
 
-<!-- Mirrored from puffintheme.com/craft/soccer/project/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 18 Feb 2020 17:22:18 GMT -->
 </html>

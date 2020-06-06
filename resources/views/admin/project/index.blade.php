@@ -1,6 +1,13 @@
 @extends('admin.layouts.app')
 @section('admin_title', 'Admin Dashboard')
 @section('adminPage_heading','Project List')
+@section('admin_css')
+    <link rel="stylesheet" href="{{asset('public/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/assets/plugins/dropify/css/dropify.min.css')}}">
+    <link rel="stylesheet" href="{{asset('public/assets/css/sumo-select.css')}}">
+    
+@endsection
 @section('admin_content')
 
     <div class="section-body">
@@ -11,7 +18,7 @@
                         <ul class="nav nav-tabs page-header-tab">
                             <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Project-OnGoing">OnGoing</a></li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Project-UpComing">UpComing</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Project-add">Add</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Project-add">Create New Project                                                                                                                       </a></li>
                         </ul>
                         <div class="header-action d-md-flex">
                             <div class="input-group mr-2">
@@ -410,12 +417,51 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="Project-add" role="tabpanel">
 
-                </div>
+                <project-component />
+
+                
             </div>
         </div>
     </div>
 @endsection
 
+@section('admin_js')
 
+    <script src="{{asset('public/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{asset('public/assets/plugins/dropify/js/dropify.min.js')}}"></script>
+    <script src="{{asset('public/assets/js/sumo-select.js')}}"></script>
+    <script>
+        // $(function(){
+        $(document).ready(function(){
+            setTimeout(() => {
+                $('.search_test').SumoSelect({search: true, placeholder:'Enter here.'});
+            }, 2000);
+            // Dropify
+            "use strict";
+
+            $('.dropify').dropify();
+
+            var drEvent = $('#dropify-event').dropify();
+            drEvent.on('dropify.beforeClear', function(event, element) {
+                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+            });
+
+            drEvent.on('dropify.afterClear', function(event, element) {
+                alert('File deleted');
+            });
+
+            $('.dropify-fr').dropify({
+                messages: {
+                    default: 'Glissez-déposez un fichier ici ou cliquez',
+                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                    remove: 'Supprimer',
+                    error: 'Désolé, le fichier trop volumineux'
+                }
+            });
+
+
+        });
+    </script>
+
+@endsection

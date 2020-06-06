@@ -22,7 +22,10 @@ Auth::routes();
 Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::get('/', 'adminController@index')->name('admin.index');
     Route::resource('systemUsers', 'systemUsersController');
+    Route::get('systemUser/toggleActivate/{id}', 'systemUsersController@toggleActive')->name('toggleActive');
+    Route::get('systemUser/updateNew', 'systemUsersController@updateNew')->name('systemUser.updateNew');
     Route::resource('project', 'projectController');
+    Route::post('project/allmembers', 'projectController@allMembers'); // Fetching all members
     Route::resource('task', 'taskController');
 });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 
 class projectController extends Controller
 {
@@ -90,5 +91,12 @@ class projectController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    // Get all users
+    public function allMembers()
+    {
+        $users = User::select('id','name')->where('active', 1 )->get();
+        return $users;
     }
 }

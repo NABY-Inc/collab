@@ -37,7 +37,7 @@
                 <a class="header-brand" href="index.html"><i class="fa fa-cogs brand-logo"></i></a>
                 <div class="dropdown">
                     <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="{{asset('public/assets/images/user.png')}}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
-                    <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o" data-toggle="tooltip" data-placement="right" title="Colleagues"></i></a>
+                    {{-- <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o" data-toggle="tooltip" data-placement="right" title="Colleagues"></i></a> --}}
                     <a href="app-chat.html"  class="nav-link icon xs-hide"><i class="fa fa-laptop" data-toggle="tooltip" data-placement="right" title="My site"></i></a>
                     <a href="app-filemanager.html"  class="nav-link icon app_file xs-hide"><i class="fa fa-folder-o" data-toggle="tooltip" data-placement="right" title="Repositories"></i></a>
                     <a href="javascript:void(0)" class="nav-link icon theme_btn xs-hide"><i class="fa fa-support" data-toggle="tooltip" data-placement="right" title="Help"></i></a>
@@ -326,21 +326,21 @@
                         <i class="fa fa-laptop"></i><span>My Site</span>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="app-contact.html">
                         <i class="fa fa-address-book"></i><span>Colleagues</span>
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <a href="app-filemanager.html">
                         <i class="fa fa-folder"></i><span>Repositories</span>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="app-setting.html">
                         <i class="fa fa-gear"></i><span>Setting</span>
                     </a>
-                </li>
+                </li> --}}
                 <li class="g_heading">Support</li>
                 <li>
                     <a href="javascript:void(0)">
@@ -352,7 +352,7 @@
     </div>
 
     {{--Top Bar--}}
-    <div class="page">
+    <div class="page" id="app">
         <div id="page_top" class="section-body top_dark">
             <div class="container-fluid">
                 <div class="page-header">
@@ -509,6 +509,7 @@
 
 <script src="{{asset('public/assets/bundles/lib.vendor.bundle.js')}}"></script>
 <script src="{{asset('public/assets/js/core.js')}}"></script>
+<script src="{{asset('public/js/app.js')}}"></script>
 
 @yield('admin_js')
 
