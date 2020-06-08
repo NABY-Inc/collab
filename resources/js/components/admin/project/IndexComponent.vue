@@ -4,7 +4,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form @submit.prevent="allMembers" enctype="multipart/form-data">
+                        <form @submit.prevent="createProject()" enctype="multipart/form-data">
                             <div class="row clearfix">
                                 <div class="col-lg-6 col-md-12">
                                     <div class="form-group">
@@ -39,10 +39,10 @@
                                 <div class="col-lg-6 col-md-12">
                                     <label>Date Range</label>
                                     <div class="form-group">
-                                        <div class="input-daterange input-group" data-provide="datepicker">
-                                            <input type="text" class="form-control" name="start" placeholder="Start Date">
+                                        <div class="input-daterange input-group">
+                                            <input type="date" class="form-control" name="start" placeholder="Start Date" v-model="dateFrom">
                                             <span class="input-group-addon"> to </span>
-                                            <input type="text" class="form-control" name="end" placeholder="Ending Date">
+                                            <input type="date" class="form-control" name="end" placeholder="Ending Date" v-model="dateTo">
                                         </div>
                                     </div>
                                 </div>
@@ -56,8 +56,8 @@
                                     <div class="form-group">
                                         <label>Select Project Team.</label><br>
                                         <div v-show="this.loading == false">
-                                            <select multiple="multiple" placeholder="Hello  im from placeholder" onchange="console.log($(this).children(':selected').length)" class="search_test" style="width:170%">
-                                                <option v-for="member in this.members" :key="member.id" :value="member.id">{{member.name}}</option>
+                                            <select id="members" multiple="multiple" placeholder="Select Project members" class="search_test" style="width:170%">
+                                                <option v-for="member in this.members" @click="selectedmembers()"  :key="member.id" :value="member.id">{{member.name}}</option>
                                             </select>
                                         </div>
                                         <span v-show="this.loading == true" class="btn btn-xs btn-primary"><i class="fa fa-cog fa-spin ml-2 "></i> Loading...</span>
@@ -72,12 +72,11 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Prject Description</label>
-                                        <textarea name="" class="form-control" id="" cols="30" rows="9" placeholder="Put Description Here..." v-model="description"></textarea>
+                                        <textarea name="" class="form-control" id="" cols="30" rows="9" placeholder="Put Description Here..." v-model="description" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 mt-3">
-                                    <button type="submit" class="btn btn-primary">Add</button>
-                                    <button type="submit" class="btn btn-default">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Create</button>
                                 </div>
                             </div>
                         </form>
@@ -93,6 +92,14 @@ export default {
     mounted(){
         this.allMembers();
         this.projectID();
+        $('#members').on('change',(event)=>{
+            var array; 
+            $(event.target).children(':selected').each(()=>{
+                array = $(event.target).val();
+            }); 
+            // console.log(array);
+            this.selectedmembers(array);
+        });
         
     },
     props:[],
@@ -108,7 +115,7 @@ export default {
             projectCode:null,
             team:[],
             image:[],
-            description:[]
+            description:null,
         }
     },
     methods:{
@@ -122,9 +129,57 @@ export default {
             });
         },
 
+        createProject(){
+            axios.post('project', {
+                title:this.title,
+                category:this.category,
+                priority:this.priority,
+                dateFrom:this.dateFrom,
+                dateTo:this.dateTo,
+                code:this.projectCode,
+                description:this.description,
+                team:this.team
+            })
+            .then(response=>{
+                this.succcess();
+                this.clearForm();
+                console.log(response.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            });
+        },
+
+        selectedmembers(data){
+            this.team.push(data);
+            console.log(data);
+        },
+
         projectID(){
             var id = Math.floor(Math.random()*99999) + 1;
             this.projectCode = 'PCS'+id+'project';
+        },
+
+        clearForm(){
+            this.title = null,
+            this.category = null,
+            this.priority = null,
+            this.dateFrom = null,
+            this.dateTo = null,
+            this.projectCode = null,
+            this.description = null,
+            this.team = []
+        }, 
+
+        succcess(){
+            swal({
+                title:"Success!",
+                text: "New Project Created Successfully!",
+                type: "success",
+            }, function(){
+                window.location.reload(true);
+            });
+            // swal("Success!", "", "success");
         }
     },
 

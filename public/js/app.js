@@ -2030,11 +2030,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
+    var _this = this;
+
     this.allMembers();
     this.projectID();
+    $('#members').on('change', function (event) {
+      var array;
+      $(event.target).children(':selected').each(function () {
+        array = $(event.target).val();
+      }); // console.log(array);
+
+      _this.selectedmembers(array);
+    });
   },
   props: [],
   data: function data() {
@@ -2049,22 +2058,60 @@ __webpack_require__.r(__webpack_exports__);
       projectCode: null,
       team: [],
       image: [],
-      description: []
+      description: null
     };
   },
   methods: {
     allMembers: function allMembers() {
-      var _this = this;
+      var _this2 = this;
 
       this.loading = true;
       axios.post('project/allmembers').then(function (response) {
-        _this.members = response.data;
-        _this.loading = false;
+        _this2.members = response.data;
+        _this2.loading = false;
       });
+    },
+    createProject: function createProject() {
+      var _this3 = this;
+
+      axios.post('project', {
+        title: this.title,
+        category: this.category,
+        priority: this.priority,
+        dateFrom: this.dateFrom,
+        dateTo: this.dateTo,
+        code: this.projectCode,
+        description: this.description,
+        team: this.team
+      }).then(function (response) {
+        _this3.succcess();
+
+        _this3.clearForm();
+
+        console.log(response.data);
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    selectedmembers: function selectedmembers(data) {
+      this.team.push(data);
+      console.log(data);
     },
     projectID: function projectID() {
       var id = Math.floor(Math.random() * 99999) + 1;
       this.projectCode = 'PCS' + id + 'project';
+    },
+    clearForm: function clearForm() {
+      this.title = null, this.category = null, this.priority = null, this.dateFrom = null, this.dateTo = null, this.projectCode = null, this.description = null, this.team = [];
+    },
+    succcess: function succcess() {
+      swal({
+        title: "Success!",
+        text: "New Project Created Successfully!",
+        type: "success"
+      }, function () {
+        window.location.reload(true);
+      }); // swal("Success!", "", "success");
     }
   }
 });
@@ -19735,7 +19782,7 @@ var render = function() {
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      return _vm.allMembers($event)
+                      return _vm.createProject()
                     }
                   }
                 },
@@ -19876,7 +19923,73 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(0),
+                    _c("div", { staticClass: "col-lg-6 col-md-12" }, [
+                      _c("label", [_vm._v("Date Range")]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c(
+                          "div",
+                          { staticClass: "input-daterange input-group" },
+                          [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.dateFrom,
+                                  expression: "dateFrom"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "date",
+                                name: "start",
+                                placeholder: "Start Date"
+                              },
+                              domProps: { value: _vm.dateFrom },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.dateFrom = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("span", { staticClass: "input-group-addon" }, [
+                              _vm._v(" to ")
+                            ]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.dateTo,
+                                  expression: "dateTo"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "date",
+                                name: "end",
+                                placeholder: "Ending Date"
+                              },
+                              domProps: { value: _vm.dateTo },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.dateTo = $event.target.value
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-lg-6 col-md-12" }, [
                       _c("div", { staticClass: "form-group" }, [
@@ -19936,10 +20049,9 @@ var render = function() {
                                 staticClass: "search_test",
                                 staticStyle: { width: "170%" },
                                 attrs: {
+                                  id: "members",
                                   multiple: "multiple",
-                                  placeholder: "Hello  im from placeholder",
-                                  onchange:
-                                    "console.log($(this).children(':selected').length)"
+                                  placeholder: "Select Project members"
                                 }
                               },
                               _vm._l(this.members, function(member) {
@@ -19947,7 +20059,12 @@ var render = function() {
                                   "option",
                                   {
                                     key: member.id,
-                                    domProps: { value: member.id }
+                                    domProps: { value: member.id },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.selectedmembers()
+                                      }
+                                    }
                                   },
                                   [_vm._v(_vm._s(member.name))]
                                 )
@@ -19978,7 +20095,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(1),
+                    _vm._m(0),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-lg-6" }, [
                       _c("div", { staticClass: "form-group" }, [
@@ -19999,7 +20116,8 @@ var render = function() {
                             id: "",
                             cols: "30",
                             rows: "9",
-                            placeholder: "Put Description Here..."
+                            placeholder: "Put Description Here...",
+                            required: ""
                           },
                           domProps: { value: _vm.description },
                           on: {
@@ -20014,7 +20132,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(2)
+                    _vm._m(1)
                   ])
                 ]
               )
@@ -20026,37 +20144,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-lg-6 col-md-12" }, [
-      _c("label", [_vm._v("Date Range")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c(
-          "div",
-          {
-            staticClass: "input-daterange input-group",
-            attrs: { "data-provide": "datepicker" }
-          },
-          [
-            _c("input", {
-              staticClass: "form-control",
-              attrs: { type: "text", name: "start", placeholder: "Start Date" }
-            }),
-            _vm._v(" "),
-            _c("span", { staticClass: "input-group-addon" }, [_vm._v(" to ")]),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "form-control",
-              attrs: { type: "text", name: "end", placeholder: "Ending Date" }
-            })
-          ]
-        )
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -20080,13 +20167,7 @@ var staticRenderFns = [
       _c(
         "button",
         { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-        [_vm._v("Add")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-default", attrs: { type: "submit" } },
-        [_vm._v("Cancel")]
+        [_vm._v("Create")]
       )
     ])
   }

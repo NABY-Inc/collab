@@ -16,18 +16,7 @@
             </div>
         </div>
         <div class="row clearfix row-deck">
-            <div class="col-xl-6 col-lg-6 col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Active Projects</h3>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="number mb-0 font-32 counter">31</h5>
-                        <span class="font-12">Projects you are involved</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-6">
+            <div class="col-xl-4 col-lg-4 col-md-4">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">System Users</h3>
@@ -35,6 +24,28 @@
                     <div class="card-body">
                         <h5 class="number mb-0 font-32 counter">{{count($systemUsers)}}</h5>
                         <span class="font-12">Members of PCS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">OnGoing Projects</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="number mb-0 font-32 counter">{{count($ongoingProjects)}}</h5>
+                        <span class="font-12">Total On-Going Projects on PCS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">UpComing Projects</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="number mb-0 font-32 counter">{{count($upcomingProjects)}}</h5>
+                        <span class="font-12">Total Up-Coming Projects on PCS</span>
                     </div>
                 </div>
             </div>

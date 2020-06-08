@@ -220,8 +220,8 @@
         <h5 class="brand-name mb-4">PCS<a href="javascript:void(0)" class="user_btn"><i class="fa fa-close"></i></a></h5>
         <div class="card-body">
             <a href="page-profile.html"><img class="card-profile-img" src="{{asset('public/assets/images/sm/avatar1.jpg')}}" alt=""></a>
-            <h6 class="mb-0">Peter Richards</h6>
-            <span>peter.richard@gmail.com</span>
+            <h6 class="mb-0">{{auth()->user()->name}}</h6>
+            <span>{{auth()->user()->email}}</span>
             <div class="d-flex align-items-baseline mt-3">
                 <h3 class="mb-0 mr-2">9.8</h3>
                 <p class="mb-0"><span class="text-success">1.6% <i class="fa fa-arrow-up"></i></span></p>
@@ -462,11 +462,17 @@
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                    <a class="dropdown-item" href="page-profile.html"><i class="dropdown-icon fa fa-user"></i> Profile</a>
+                                    <a class="dropdown-item user_btn" href="javascript:void(0)"><i class="dropdown-icon fa fa-user"></i> Profile</a>
                                     <a class="dropdown-item" href="app-setting.html"><i class="dropdown-icon fa fa-cog"></i> Settings</a>
-                                    <a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fa fa-send"></i> Message</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{% url 'siteapp:logout' %}"><i class="dropdown-icon fa fa-lock"></i> Sign out</a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                  document.getElementById('logout-form').submit();">
+                                            <i class="dropdown-icon fa fa-lock"></i> Sign out
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                                 </div>
                             </div>
                         </div>
