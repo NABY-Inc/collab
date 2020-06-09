@@ -10,10 +10,9 @@ class projectController extends Controller
     /* Display a listing of the resource. */
     public function index()
     {
-        // dd(\Carbon\Carbon::parse(now())->format('Y-m-d'));
-        $data = \App\ProjectMember::where('user_id', auth()->user()->id)->select('project_id')->get();
-        $projects = [];
-        foreach ($data as $key) {
+        $data = \App\ProjectMember::where('user_id', auth()->user()->id)->select('project_id')->get(); // Finding project for the user
+        $projects = []; // Keeping the projects in an array
+        foreach ($data as $key) { 
             array_push($projects, $key->project_id);
         }
         // Finding on-Going projects
@@ -28,16 +27,6 @@ class projectController extends Controller
         }elseif (auth()->user()->role == 2){
             return view('user.project.index', compact('ongoing_projects','upcoming_projects'));
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /* Store a newly created resource in storage. */
@@ -70,40 +59,48 @@ class projectController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    /* Display the specified resource. */
     public function show($id)
     {
+        $project = \App\Project::find($id);
         //Returning project Detail page per role
         if (auth()->user()->role == 1){
-            return view('admin.project.show');
+            return view('admin.project.show', compact('project'));
         }elseif (auth()->user()->role == 2){
-            return view('user.project.show');
+            return view('user.project.show', compact('project'));
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /* Update the specified resource in storage. */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            // validating data
+            $data = $request->validate([
+                'title'       => 'required',
+                'category'    => 'required',
+                'code'        => 'required',
+                'priority'    => 'required',
+                'dateFrom'    => 'required',
+                'dateTo'      => 'required',
+                'description' => 'required',
+                'progress'    => 'sometimes',
+            ]);
+            // Updating Project
+            $data = \App\Project::findOrFail($id)->update($data);
+            // Keeping Project members
+            $members = $request->team; 
+            // Checking if user has selected new members to join the project
+            if (count($members) > 0) {
+                // Looping through members to store for project members
+                foreach (end($members) as $member) {
+                    \App\ProjectMember::create(['project_id' => $id, 'user_id' => $member]);
+                }
+            }
+            return true;
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 
     /**
@@ -122,5 +119,27 @@ class projectController extends Controller
     {
         $users = User::select('id','name')->where('active', 1 )->get();
         return $users;
+    }
+
+    // Choosing non selected members
+    public function nonSelectedMembers($id)
+    {
+        // Getting users of that project
+        $data = \App\ProjectMember::where('project_id',$id)->select('user_id')->get();
+        $members_of_that_project = [];
+        // Looping through to store their ID's into array
+        foreach ($data as $key) {
+            array_push($members_of_that_project, $key->user_id);
+        }
+        // Now selecting members who are not in the project
+        $members_not_part_of_project = User::select('id','name')->where('active', 1 )->whereNotIn('id', $members_of_that_project)->get();
+        return $members_not_part_of_project;
+    }
+
+    // Removing Project Member
+    public function removeMember($id)
+    {
+        \App\ProjectMember::findOrFail($id)->delete();
+        return true;
     }
 }

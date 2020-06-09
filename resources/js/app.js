@@ -3,7 +3,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('projectedit-component', require('./components/admin/project/EditComponent.vue').default);
 Vue.component('project-component', require('./components/admin/project/IndexComponent.vue').default);
 
 

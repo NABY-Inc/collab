@@ -56,11 +56,12 @@
                                     <div class="form-group">
                                         <label>Select Project Team.</label><br>
                                         <div v-show="this.loading == false">
-                                            <select id="members" multiple="multiple" placeholder="Select Project members" class="search_test" style="width:170%">
+                                            <select id="members" multiple="multiple" placeholder="Select Project members" class="search_test" style="width:170%" required>
                                                 <option v-for="member in this.members" @click="selectedmembers()"  :key="member.id" :value="member.id">{{member.name}}</option>
                                             </select>
                                         </div>
                                         <span v-show="this.loading == true" class="btn btn-xs btn-primary"><i class="fa fa-cog fa-spin ml-2 "></i> Loading...</span>
+                                        <span style="color:red" v-show="this.showError">Please select Project Member(s)</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-12">
@@ -71,7 +72,7 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label>Prject Description</label>
+                                        <label>Project Description</label>
                                         <textarea name="" class="form-control" id="" cols="30" rows="9" placeholder="Put Description Here..." v-model="description" required></textarea>
                                     </div>
                                 </div>
@@ -116,6 +117,7 @@ export default {
             team:[],
             image:[],
             description:null,
+            showError:false,
         }
     },
     methods:{
@@ -130,24 +132,27 @@ export default {
         },
 
         createProject(){
-            axios.post('project', {
-                title:this.title,
-                category:this.category,
-                priority:this.priority,
-                dateFrom:this.dateFrom,
-                dateTo:this.dateTo,
-                code:this.projectCode,
-                description:this.description,
-                team:this.team
-            })
-            .then(response=>{
-                this.succcess();
-                this.clearForm();
-                console.log(response.data);
-            })
-            .catch(err=>{
-                console.log(err);
-            });
+            if (this.team.length < 1) {
+                setTimeout(() => {
+                    this.showError = true
+                }, 3000);
+            }else{
+                axios.post('project', {
+                    title:this.title,
+                    category:this.category,
+                    priority:this.priority,
+                    dateFrom:this.dateFrom,
+                    dateTo:this.dateTo,
+                    code:this.projectCode,
+                    description:this.description,
+                    team:this.team
+                })
+                .then(response=>{
+                    this.succcess();
+                    this.clearForm();
+                    console.log(response.data);
+                })
+            }
         },
 
         selectedmembers(data){
