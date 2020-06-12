@@ -42,13 +42,13 @@
                                 <div class="col-lg-6 col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h3 class="card-title">{{$project->title}}</h3>
+                                            <h3 class="card-title"><a href="{{route('project.show', $project->id)}}">{{$project->title}}</a></h3>
                                             <div class="card-options">
                                                 <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fa fa-chevron-up"></i></a>
                                             </div>
                                         </div>
                                         <div class="card-body">
-                                            <a href="{{route('project.show', $project->id)}}"><span class="tag tag-danger mb-3">{{$project->category}}</span></a>
+                                            <a><span class="tag tag-danger mb-3">{{$project->category}}</span></a>
                                             <p>{{$project->description}}</p>
                                             <div class="row">
                                                 <div class="col-5 py-1"><strong>Creator:</strong></div>

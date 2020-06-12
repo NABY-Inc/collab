@@ -66,11 +66,19 @@
                             <div class="card">
                                 <div class="card-body widgets1">
                                     <div class="icon">
-                                        <i class="fa fa-comment text-warning font-30"></i>
+                                        <i class="fa fa-comments text-warning font-30"></i>
                                     </div>
                                     <div class="details">
                                         <h6 class="mb-0 font600">Total Comments</h6>
-                                        <span class="mb-0">6,270</span>
+                                        @php
+                                        $howMany = 0;
+                                         foreach ($project->projectPosts as $key) {
+                                             foreach ($key->comments as $data) {
+                                                $howMany +=1;
+                                             }
+                                         }   
+                                        @endphp
+                                        <span class="mb-0">{{$howMany}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -113,259 +121,14 @@
                         @endif
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade" id="pills-timeline" role="tabpanel" aria-labelledby="pills-timeline-tab">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Activity</h3>
-                                    <div class="card-options">
-                                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fa fa-chevron-up"></i></a>
-                                        <a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fa fa-maximize"></i></a>
-                                        <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
-                                        <div class="item-action dropdown ml-2">
-                                            <a href="javascript:void(0)" data-toggle="dropdown"><i class="fa fa-more-vertical"></i></a>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-eye"></i> View Details </a>
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-share-alt"></i> Share </a>
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-cloud-download"></i> Download</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-copy"></i> Copy to</a>
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-folder"></i> Move to</a>
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-edit"></i> Rename</a>
-                                                <a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="timeline_item ">
-                                        <img class="tl_avatar" src="{{asset('public/assets/images/xs/avatar1.jpg')}}" alt="">
-                                        <span><a href="javascript:void(0);">Elisse Joson</a> San Francisco, CA <small class="float-right text-right">20-April-2019 - Today</small></span>
-                                        <h6 class="font600">Hello, 'Im a single div responsive timeline without media Queries!</h6>
-                                        <div class="msg">
-                                            <p>I'm speaking with myself, number one, because I have a very good brain and I've said a lot of things. I write the best placeholder text, and I'm the biggest developer on the web card she has is the Lorem card.</p>
-                                            <a href="javascript:void(0);" class="mr-20 text-muted"><i class="fa fa-heart text-pink"></i> 12 Love</a>
-                                            <a class="text-muted" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-comments"></i> 1 Comment</a>
-                                            <div class="collapse p-4 section-gray" id="collapseExample">
-                                                <form class="well">
-                                                    <div class="form-group">
-                                                        <textarea rows="2" class="form-control no-resize" placeholder="Enter here for tweet..."></textarea>
-                                                    </div>
-                                                    <button class="btn btn-primary">Submit</button>
-                                                </form>
-                                                <ul class="recent_comments list-unstyled mt-4 mb-0">
-                                                    <li>
-                                                        <div class="avatar_img">
-                                                            <img class="rounded img-fluid" src="{{asset('public/assets/images/xs/avatar4.jpg')}}" alt="">
-                                                        </div>
-                                                        <div class="comment_body">
-                                                            <h6>Donald Gardner <small class="float-right font-14">Just now</small></h6>
-                                                            <p>Lorem ipsum Veniam aliquip culpa laboris minim tempor</p>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <mypost-component :project_id="{{$project->id}}"></mypost-component>
 
-                                    <div class="timeline_item ">
-                                        <img class="tl_avatar" src="{{asset('public/assets/images/xs/avatar4.jpg')}}" alt="">
-                                        <span><a href="javascript:void(0);" title="">Dessie Parks</a> Oakland, CA <small class="float-right text-right">19-April-2019 - Yesterday</small></span>
-                                        <h6 class="font600">Oeehhh, that's awesome.. Me too!</h6>
-                                        <div class="msg">
-                                            <p>I'm speaking with myself, number one, because I have a very good brain and I've said a lot of things. on the web by far... While that's mock-ups and this is politics, are they really so different? I think the only card she has is the Lorem card.</p>
-                                            <div class="timeline_img mb-20">
-                                                <img class="width100" src="{{asset('public/assets/images/gallery/1.jpg')}}" alt="Awesome Image">
-                                                <img class="width100" src="{{asset('public/assets/images/gallery/2.jpg')}}" alt="Awesome Image">
-                                            </div>
-                                            <a href="javascript:void(0);" class="mr-20 text-muted"><i class="fa fa-heart text-pink"></i> 23 Love</a>
-                                            <a class="text-muted" role="button" data-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample1"><i class="fa fa-comments"></i> 2 Comment</a>
-                                            <div class="collapse p-4 section-gray" id="collapseExample1">
-                                                <form class="well">
-                                                    <div class="form-group">
-                                                        <textarea rows="2" class="form-control no-resize" placeholder="Enter here for tweet..."></textarea>
-                                                    </div>
-                                                    <button class="btn btn-primary">Submit</button>
-                                                </form>
-                                                <ul class="recent_comments list-unstyled mt-4 mb-0">
-                                                    <li>
-                                                        <div class="avatar_img">
-                                                            <img class="rounded img-fluid" src="{{asset('public/assets/images/xs/avatar4.jpg')}}" alt="">
-                                                        </div>
-                                                        <div class="comment_body">
-                                                            <h6>Donald Gardner <small class="float-right font-14">Just now</small></h6>
-                                                            <p>Lorem ipsum Veniam aliquip culpa laboris minim tempor</p>
-                                                            <div class="timeline_img mb-20">
-                                                                <img class="width150" src="{{asset('public/assets/images/gallery/7.jpg')}}" alt="Awesome Image">
-                                                                <img class="width150" src="{{asset('public/assets/images/gallery/8.jpg')}}" alt="Awesome Image">
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="avatar_img">
-                                                            <img class="rounded img-fluid" src="{{asset('public/assets/images/xs/avatar3.jpg')}}" alt="">
-                                                        </div>
-                                                        <div class="comment_body">
-                                                            <h6>Dessie Parks <small class="float-right font-14">1min ago</small></h6>
-                                                            <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking</p>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="timeline_item ">
-                                        <img class="tl_avatar" src="{{asset('public/assets/images/xs/avatar7.jpg')}}" alt="">
-                                        <span><a href="javascript:void(0);" title="">Rochelle Barton</a> San Francisco, CA <small class="float-right text-right">12-April-2019</small></span>
-                                        <h6 class="font600">An Engineer Explains Why You Should Always Order the Larger Pizza</h6>
-                                        <div class="msg">
-                                            <p>I'm speaking with myself, number one, because I have a very good brain and I've said a lot of things. I write the best placeholder text, and I'm the biggest developer on the web by far... While that's mock-ups and this is politics, is the Lorem card.</p>
-                                            <a href="javascript:void(0);" class="mr-20 text-muted"><i class="fa fa-heart text-pink"></i> 7 Love</a>
-                                            <a class="text-muted" role="button" data-toggle="collapse" href="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2"><i class="fa fa-comments"></i> 1 Comment</a>
-                                            <div class="collapse p-4 section-gray" id="collapseExample2">
-                                                <form class="well">
-                                                    <div class="form-group">
-                                                        <textarea rows="2" class="form-control no-resize" placeholder="Enter here for tweet..."></textarea>
-                                                    </div>
-                                                    <button class="btn btn-primary">Submit</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade active show" id="pills-blog" role="tabpanel" aria-labelledby="pills-blog-tab">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="new_post">
-                                        <div class="form-group">
-                                            <textarea rows="4" class="form-control no-resize" placeholder="Please type what you want..."></textarea>
-                                        </div>
-                                        <div class="mt-4 text-right">
-                                            <button class="btn btn-warning"><i class="fa fa-link"></i></button>
-                                            <button class="btn btn-warning"><i class="fa fa-camera"></i></button>
-                                            <button class="btn btn-primary">Post</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card blog_single_post">
-                                <div class="img-post">
-                                    <img class="d-block img-fluid" src="{{asset('public/assets/images/gallery/6.jpg')}}" alt="First slide">
-                                </div>
-                                <div class="card-body">
-                                    <h4><a href="#">All photographs are accurate</a></h4>
-                                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal</p>
-                                </div>
-                                <div class="footer">
-                                    <div class="actions">
-                                        <a href="javascript:void(0);" class="btn btn-outline-secondary">Continue Reading</a>
-                                    </div>
-                                    <ul class="stats list-unstyled">
-                                        <li><a href="javascript:void(0);">General</a></li>
-                                        <li><a href="javascript:void(0);" class="fa fa-heart"> 28</a></li>
-                                        <li><a href="javascript:void(0);" class="fa fa-comment"> 128</a></li>
-                                    </ul>
-                                </div>
-                                <ul class="list-group card-list-group">
-                                    <li class="list-group-item py-5">
-                                        <div class="media">
-                                            <img class="media-object avatar avatar-md mr-4" src="{{asset('public/assets/images/xs/avatar3.jpg')}}" alt="">
-                                            <div class="media-body">
-                                                <div class="media-heading">
-                                                    <small class="float-right text-muted">4 min</small>
-                                                    <h5>Peter Richards</h5>
-                                                </div>
-                                                <div>
-                                                    Aenean lacinia bibendum nulla sed consectetur. Vestibulum id ligula porta felis euismod semper. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras
-                                                    justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Cum sociis natoque penatibus et magnis dis parturient montes,
-                                                    nascetur ridiculus mus.
-                                                </div>
-                                                <ul class="media-list">
-                                                    <li class="media mt-4">
-                                                        <img class="media-object avatar mr-4" src="{{asset('public/assets/images/xs/avatar1.jpg')}}" alt="">
-                                                        <div class="media-body">
-                                                            <strong>Debra Beck: </strong>
-                                                            Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus
-                                                            auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="card blog_single_post">
-                                <div class="img-post">
-                                    <img class="d-block img-fluid" src="{{asset('public/assets/images/gallery/4.jpg' )}}" alt="First slide">
-                                </div>
-                                <div class="card-body">
-                                    <h4><a href="#">All photographs are accurate</a></h4>
-                                    <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal</p>
-                                </div>
-                                <div class="footer">
-                                    <div class="actions">
-                                        <a href="javascript:void(0);" class="btn btn-outline-secondary">Continue Reading</a>
-                                    </div>
-                                    <ul class="stats list-unstyled">
-                                        <li><a href="javascript:void(0);">General</a></li>
-                                        <li><a href="javascript:void(0);" class="fa fa-heart"> 28</a></li>
-                                        <li><a href="javascript:void(0);" class="fa fa-comment"> 128</a></li>
-                                    </ul>
-                                </div>
-                                <ul class="list-group card-list-group">
-                                    <li class="list-group-item py-5">
-                                        <div class="media">
-                                            <img class="media-object avatar avatar-md mr-4" src="{{asset('public/assets/images/xs/avatar7.jpg')}}" alt="">
-                                            <div class="media-body">
-                                                <div class="media-heading">
-                                                    <small class="float-right text-muted">12 min</small>
-                                                    <h5>Peter Richards</h5>
-                                                </div>
-                                                <div>
-                                                    Donec id elit non mi porta gravida at eget metus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis
-                                                    parturient montes, nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item py-5">
-                                        <div class="media">
-                                            <img class="media-object avatar avatar-md mr-4" src="{{asset('public/assets/images/xs/avatar6.jpg')}}" alt="">
-                                            <div class="media-body">
-                                                <div class="media-heading">
-                                                    <small class="float-right text-muted">34 min</small>
-                                                    <h5>Peter Richards</h5>
-                                                </div>
-                                                <div>
-                                                    Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Aenean eu leo quam. Pellentesque ornare sem lacinia quam
-                                                    venenatis vestibulum. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-                                                </div>
-                                                <ul class="media-list">
-                                                    <li class="media mt-4">
-                                                        <img class="media-object avatar mr-4" src="{{asset('public/assets/images/xs/avatar5.jpg')}}" alt="">
-                                                        <div class="media-body">
-                                                            <strong>Wayne Holland: </strong>
-                                                            Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Donec ullamcorper nulla non metus
-                                                            auctor fringilla. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Sed posuere consectetur est at lobortis.
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        <timelinepost-component :project_id="{{$project->id}}" :user_id={{auth()->user()->id}}></timelinepost-component>
 
                         @if (auth()->user()->id === $project->user_id)
                         <projectedit-component :project="{{$project}}"/>
                         @endif
 
-                        
                     </div>
                 </div>
             </div>

@@ -28,6 +28,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::post('project/allmembers', 'projectController@allMembers'); // Fetching all members
     Route::get('project/{id}/newMembers', 'projectController@nonSelectedMembers'); // Fetching new members
     Route::get('project/removeMember/{id}', 'projectController@removeMember')->name('removeMember'); // Fetching new members
+    Route::post('project/{id}/post','projectPostController@createPost'); // Creating Project Post
+    Route::post('project/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
+    Route::get('project/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
+    Route::get('project/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post
+    Route::post('project/{id}/createComment','commentController@addComment'); // Adding comment
+    Route::post('project/{id}/deleteComment','commentController@deleteComment'); // Delete comment
     Route::resource('task', 'taskController');
 });
 

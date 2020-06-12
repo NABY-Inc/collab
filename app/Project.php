@@ -19,4 +19,10 @@ class Project extends Model
     {
         return $this->hasMany(ProjectMember::class);
     }
+
+    // Relating to Project Posts
+    public function projectPosts()
+    {
+        return $this->hasMany(ProjectPost::class);
+    }
 }
