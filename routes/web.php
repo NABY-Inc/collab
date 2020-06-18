@@ -25,6 +25,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::get('systemUser/toggleActivate/{id}', 'systemUsersController@toggleActive')->name('toggleActive');
     Route::get('systemUser/updateNew', 'systemUsersController@updateNew')->name('systemUser.updateNew');
     Route::resource('project', 'projectController');
+    Route::post('project/{id}', 'projectController@update');
     Route::post('project/allmembers', 'projectController@allMembers'); // Fetching all members
     Route::get('project/{id}/newMembers', 'projectController@nonSelectedMembers'); // Fetching new members
     Route::get('project/removeMember/{id}', 'projectController@removeMember')->name('removeMember'); // Fetching new members

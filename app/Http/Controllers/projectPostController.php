@@ -9,7 +9,7 @@ class projectPostController extends Controller
     //All Posts
     public function allPosts()
     {
-        $posts = \App\ProjectPost::with('user','comments', 'comments.user')->where('project_id', request()->id)->orderBy('id', 'DESC')->paginate(3);
+        $posts = \App\ProjectPost::with('user','comments', 'comments.user')->where('project_id', request()->id)->orderBy('id', 'DESC')->paginate(2);
         return $posts;
     }
 

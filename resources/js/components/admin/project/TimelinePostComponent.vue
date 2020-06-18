@@ -151,7 +151,7 @@ export default {
                 .then(response => {
                     swal.close();
                     that.allPosts();
-                    this.$eventBus.$emit('comment-deleted');
+                    that.$eventBus.$emit('comment-deleted');
                 });
             });
         },

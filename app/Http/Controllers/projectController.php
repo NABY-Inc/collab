@@ -34,28 +34,29 @@ class projectController extends Controller
     {
         try {
             // validating data
-            $data = $request->validate([
-                'title'       => 'required',
-                'category'    => 'required',
-                'code'        => 'required',
-                'priority'    => 'required',
-                'dateFrom'    => 'required',
-                'dateTo'      => 'required',
-                'description' => 'required',
-            ]);
+            $data = $this->validateData();
+
+            // Saving image and adding to data array if any
+            if ($request->hasFile('image')){
+                $fileName = time().'.'.$request->file('image')->getClientOriginalExtension();
+                $request->file('image')->move(public_path('uploads/project_thumbnails'), $fileName);
+                $data = $this->array_push_assoc($data, 'image', $fileName);
+            }
+
             // Storing Data
             $data = auth()->user()->projects()->create($data);
             // Getting Project Id
             $project_id = $data->id;
             // Keeping Project members
-            $members = $request->team; 
+            $members = array_map('intval', explode(',', $request->team));
+            $members = array_unique($members); 
             // Looping through members to store for project members
-            foreach (end($members) as $member) {
+            foreach ($members as $key => $member) {
                 \App\ProjectMember::create(['project_id' => $project_id, 'user_id' => $member]);
             }
             return true;
         } catch (\Exception $e) {
-            return $e;
+            return false;
         }
     }
 
@@ -75,31 +76,38 @@ class projectController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // validating data
-            $data = $request->validate([
-                'title'       => 'required',
-                'category'    => 'required',
-                'code'        => 'required',
-                'priority'    => 'required',
-                'dateFrom'    => 'required',
-                'dateTo'      => 'required',
-                'description' => 'required',
-                'progress'    => 'sometimes',
-            ]);
+
+            // Validating Data
+            $data = $this->validateData();
+
+            // Saving image and adding to data array if any
+            if ($request->hasFile('image')){
+                $fileName = time().'.'.$request->file('image')->getClientOriginalExtension();
+                // If image already exists
+                if ($request->oldImage != 'default.jpg' && \File::exists(public_path('uploads/project_thumbnails/'.$request->oldImage))) {
+                    \File::delete(public_path('uploads/project_thumbnails/'.$request->oldImage));
+                    // return 'Yes Projet have its Selected Image';
+                }
+                $request->file('image')->move(public_path('uploads/project_thumbnails'), $fileName);
+                $data = $this->array_push_assoc($data, 'image', $fileName);
+            }
+
             // Updating Project
             $data = \App\Project::findOrFail($id)->update($data);
             // Keeping Project members
             $members = $request->team; 
             // Checking if user has selected new members to join the project
-            if (count($members) > 0) {
+            $members = array_map('intval', explode(',', $request->team));
+            $members = array_unique($members); 
+            if (end($members) > 0) {
                 // Looping through members to store for project members
-                foreach (end($members) as $member) {
+                foreach ($members as $key => $member) {
                     \App\ProjectMember::create(['project_id' => $id, 'user_id' => $member]);
                 }
             }
             return true;
         } catch (\Exception $e) {
-            return $e;
+            return false; // Expected error will be invalid image or image size
         }
     }
 
@@ -119,6 +127,23 @@ class projectController extends Controller
     {
         $users = User::select('id','name')->where('active', 1 )->get();
         return $users;
+    }
+
+    // validating data
+    public function validateData()
+    {
+        $data = request()->validate([
+            'title'       => 'required',
+            'category'    => 'required',
+            'code'        => 'required',
+            'priority'    => 'required',
+            'dateFrom'    => 'required',
+            'dateTo'      => 'required',
+            'image'       => 'sometimes|required|image|mimes:jpeg,png,jpg|max:2048',
+            'description' => 'required',
+            'progress'    => 'sometimes',
+        ]);
+        return $data;
     }
 
     // Choosing non selected members
@@ -141,5 +166,12 @@ class projectController extends Controller
     {
         \App\ProjectMember::findOrFail($id)->delete();
         return true;
+    }
+
+    // Custom function to add image
+    public function array_push_assoc($array, $key, $value)
+    {
+        $array[$key] = $value;
+        return $array;
     }
 }

@@ -72,9 +72,9 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-12">
-                                <label>Image label (Optional)</label>
+                                <label>Change Project label (Optional)</label>
                                 <div class="form-group">
-                                    <input type="file" class="dropify" name="image">
+                                    <input type="file" class="dropify" name="image" @change="onFileChange">
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -99,17 +99,17 @@ export default {
     mounted(){
         this.theProject();
         this.allMembers();
+    },
+    props:['project'],
+    created(){
         $('#newMembers').on('change',(event)=>{
             var array; 
             $(event.target).children(':selected').each(()=>{
                 array = $(event.target).val();
             }); 
-            // console.log(array);
             this.selectedmembers(array);
         });
-        
     },
-    props:['project'],
     data(){
         return{
             members:[],
@@ -121,9 +121,10 @@ export default {
             dateTo:null,
             projectCode:null,
             team:[],
-            image:[],
+            image:null,
             description:null,
             progress:null,
+            oldImage:null,
         }
     },
     methods:{
@@ -147,32 +148,35 @@ export default {
             this.projectCode = this.project.code;
             this.description = this.project.description;
             this.progress = this.project.progress;
+            this.oldImage = this.project.image;
+        },
+
+        onFileChange(e){
+            this.image = e.target.files[0];
         },
 
         updateProject(){
-            axios.patch(''+this.project.id, {
-                title:this.title,
-                category:this.category,
-                priority:this.priority,
-                dateFrom:this.dateFrom,
-                dateTo:this.dateTo,
-                code:this.projectCode,
-                description:this.description,
-                progress:this.progress,
-                team:this.team
-            })
-            .then(response=>{
-                this.succcess();
-                console.log(response.data);
-            })
-            .catch(err=>{
-                console.log(err);
+            var fdata = new FormData();
+                if (this.image != null) { fdata.append('image', this.image); }
+                fdata.append('dateFrom', this.dateFrom);        fdata.append('team', this.team);
+                fdata.append('title', this.title);              fdata.append('dateTo', this.dateTo);
+                fdata.append('category', this.category);        fdata.append('code', this.projectCode);
+                fdata.append('priority', this.priority);        fdata.append('description', this.description);
+                fdata.append('progress', this.progress);        fdata.append('oldImage', this.oldImage);
+            axios.post(''+this.project.id, fdata)
+            .then(response => {
+                if (response.data == 1) {
+                        this.succcess();
+                    }else{
+                        this.error();
+                    }
+                    console.log(response.data);
             });
         },
 
         selectedmembers(data){
             this.team.push(data);
-            console.log(data);
+            // console.log(data);
         }, 
 
         succcess(){
@@ -182,6 +186,14 @@ export default {
                 type: "success",
             }, function(){
                 window.location.reload(true);
+            });
+        }, 
+
+        error(){
+            swal({
+                title:"Oops Something went wrong!",
+                text: "File should be an image with size not more than 2MB",
+                type: "error"
             });
         }
     },

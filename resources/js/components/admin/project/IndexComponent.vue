@@ -67,7 +67,7 @@
                                 <div class="col-lg-6 col-md-12">
                                     <label>Image label (Optional)</label>
                                     <div class="form-group">
-                                        <input type="file" class="dropify" name="image">
+                                        <input type="file" class="dropify" name="image" @change="onFileChange">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -115,7 +115,7 @@ export default {
             dateTo:null,
             projectCode:null,
             team:[],
-            image:[],
+            image:null,
             description:null,
             showError:false,
         }
@@ -131,26 +131,34 @@ export default {
             });
         },
 
+        onFileChange(e){
+            console.log(e.target.files[0]);
+            this.image = e.target.files[0];
+            
+        },
+
         createProject(){
             if (this.team.length < 1) {
                 setTimeout(() => {
                     this.showError = true
                 }, 3000);
             }else{
-                axios.post('project', {
-                    title:this.title,
-                    category:this.category,
-                    priority:this.priority,
-                    dateFrom:this.dateFrom,
-                    dateTo:this.dateTo,
-                    code:this.projectCode,
-                    description:this.description,
-                    team:this.team
-                })
+                var fdata = new FormData();
+                if (this.image != null) { fdata.append('image', this.image); }
+                fdata.append('dateFrom', this.dateFrom);        fdata.append('team', this.team);
+                fdata.append('title', this.title);              fdata.append('dateTo', this.dateTo);
+                fdata.append('category', this.category);        fdata.append('code', this.projectCode);
+                fdata.append('priority', this.priority);        fdata.append('description', this.description);
+                
+                axios.post('project', fdata)
                 .then(response=>{
-                    this.succcess();
-                    this.clearForm();
-                    console.log(response.data);
+                    if (response.data === false) {
+                        this.error();
+                    }else{
+                        this.succcess();
+                        this.clearForm();
+                        console.log(response.data);
+                    }
                 })
             }
         },
@@ -185,6 +193,14 @@ export default {
                 window.location.reload(true);
             });
             // swal("Success!", "", "success");
+        }, 
+
+        error(){
+            swal({
+                title:"Oops Something went wrong!",
+                text: "File should be an image with size not more than 2MB",
+                type: "error"
+            });
         }
     },
 

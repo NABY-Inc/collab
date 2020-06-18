@@ -349,7 +349,7 @@
                                                 @if (count($upcoming_projects) > 0)
                                                     @foreach ($upcoming_projects as $project)
                                                         <tr>
-                                                            <td><img src="{{asset('public/assets/images/xs/avatar1.jpg')}}" alt="Avatar" class="w30 rounded-circle mr-2"> <span>{{$project->user->name}}</span></td>
+                                                            <td><img src="{{asset('public/uploads/project_thumbnails/'.$project->image)}}" alt="Avatar" class="w30 rounded-circle mr-2"> <span>{{$project->user->name}}</span></td>
                                                             <td>{{$project->title}}</td>
                                                             <td>{{$project->code}}</td>
                                                             <td><span>{{\Carbon\carbon::parse($project->dateFrom)->toFormattedDateString()}}</span></td>

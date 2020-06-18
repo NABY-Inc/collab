@@ -2178,20 +2178,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
-    var _this = this;
-
     this.theProject();
     this.allMembers();
+  },
+  props: ['project'],
+  created: function created() {
+    var _this = this;
+
     $('#newMembers').on('change', function (event) {
       var array;
       $(event.target).children(':selected').each(function () {
         array = $(event.target).val();
-      }); // console.log(array);
+      });
 
       _this.selectedmembers(array);
     });
   },
-  props: ['project'],
   data: function data() {
     return {
       members: [],
@@ -2203,9 +2205,10 @@ __webpack_require__.r(__webpack_exports__);
       dateTo: null,
       projectCode: null,
       team: [],
-      image: [],
+      image: null,
       description: null,
-      progress: null
+      progress: null,
+      oldImage: null
     };
   },
   methods: {
@@ -2227,31 +2230,42 @@ __webpack_require__.r(__webpack_exports__);
       this.projectCode = this.project.code;
       this.description = this.project.description;
       this.progress = this.project.progress;
+      this.oldImage = this.project.image;
+    },
+    onFileChange: function onFileChange(e) {
+      this.image = e.target.files[0];
     },
     updateProject: function updateProject() {
       var _this3 = this;
 
-      axios.patch('' + this.project.id, {
-        title: this.title,
-        category: this.category,
-        priority: this.priority,
-        dateFrom: this.dateFrom,
-        dateTo: this.dateTo,
-        code: this.projectCode,
-        description: this.description,
-        progress: this.progress,
-        team: this.team
-      }).then(function (response) {
-        _this3.succcess();
+      var fdata = new FormData();
+
+      if (this.image != null) {
+        fdata.append('image', this.image);
+      }
+
+      fdata.append('dateFrom', this.dateFrom);
+      fdata.append('team', this.team);
+      fdata.append('title', this.title);
+      fdata.append('dateTo', this.dateTo);
+      fdata.append('category', this.category);
+      fdata.append('code', this.projectCode);
+      fdata.append('priority', this.priority);
+      fdata.append('description', this.description);
+      fdata.append('progress', this.progress);
+      fdata.append('oldImage', this.oldImage);
+      axios.post('' + this.project.id, fdata).then(function (response) {
+        if (response.data == 1) {
+          _this3.succcess();
+        } else {
+          _this3.error();
+        }
 
         console.log(response.data);
-      })["catch"](function (err) {
-        console.log(err);
       });
     },
     selectedmembers: function selectedmembers(data) {
-      this.team.push(data);
-      console.log(data);
+      this.team.push(data); // console.log(data);
     },
     succcess: function succcess() {
       swal({
@@ -2260,6 +2274,13 @@ __webpack_require__.r(__webpack_exports__);
         type: "success"
       }, function () {
         window.location.reload(true);
+      });
+    },
+    error: function error() {
+      swal({
+        title: "Oops Something went wrong!",
+        text: "File should be an image with size not more than 2MB",
+        type: "error"
       });
     }
   }
@@ -2393,7 +2414,7 @@ __webpack_require__.r(__webpack_exports__);
       dateTo: null,
       projectCode: null,
       team: [],
-      image: [],
+      image: null,
       description: null,
       showError: false
     };
@@ -2408,6 +2429,10 @@ __webpack_require__.r(__webpack_exports__);
         _this2.loading = false;
       });
     },
+    onFileChange: function onFileChange(e) {
+      console.log(e.target.files[0]);
+      this.image = e.target.files[0];
+    },
     createProject: function createProject() {
       var _this3 = this;
 
@@ -2416,21 +2441,30 @@ __webpack_require__.r(__webpack_exports__);
           _this3.showError = true;
         }, 3000);
       } else {
-        axios.post('project', {
-          title: this.title,
-          category: this.category,
-          priority: this.priority,
-          dateFrom: this.dateFrom,
-          dateTo: this.dateTo,
-          code: this.projectCode,
-          description: this.description,
-          team: this.team
-        }).then(function (response) {
-          _this3.succcess();
+        var fdata = new FormData();
 
-          _this3.clearForm();
+        if (this.image != null) {
+          fdata.append('image', this.image);
+        }
 
-          console.log(response.data);
+        fdata.append('dateFrom', this.dateFrom);
+        fdata.append('team', this.team);
+        fdata.append('title', this.title);
+        fdata.append('dateTo', this.dateTo);
+        fdata.append('category', this.category);
+        fdata.append('code', this.projectCode);
+        fdata.append('priority', this.priority);
+        fdata.append('description', this.description);
+        axios.post('project', fdata).then(function (response) {
+          if (response.data === false) {
+            _this3.error();
+          } else {
+            _this3.succcess();
+
+            _this3.clearForm();
+
+            console.log(response.data);
+          }
         });
       }
     },
@@ -2453,6 +2487,13 @@ __webpack_require__.r(__webpack_exports__);
       }, function () {
         window.location.reload(true);
       }); // swal("Success!", "", "success");
+    },
+    error: function error() {
+      swal({
+        title: "Oops Something went wrong!",
+        text: "File should be an image with size not more than 2MB",
+        type: "error"
+      });
     }
   }
 });
@@ -2767,15 +2808,12 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         confirmButtonText: 'Yes, delete!',
         closeOnConfirm: false
       }, function () {
-        var _this3 = this;
-
         axios.post(this.id + '/deleteComment', {
           id: comment_id
         }).then(function (response) {
           swal.close();
           that.allPosts();
-
-          _this3.$eventBus.$emit('comment-deleted');
+          that.$eventBus.$emit('comment-deleted');
         });
       });
     },
@@ -42079,7 +42117,17 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(1),
+                  _c("div", { staticClass: "col-lg-6 col-md-12" }, [
+                    _c("label", [_vm._v("Change Project label (Optional)")]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("input", {
+                        staticClass: "dropify",
+                        attrs: { type: "file", name: "image" },
+                        on: { change: _vm.onFileChange }
+                      })
+                    ])
+                  ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-lg-6" }, [
                     _c("div", { staticClass: "form-group" }, [
@@ -42119,7 +42167,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _vm._m(2)
+            _vm._m(1)
           ]
         )
       ])
@@ -42133,21 +42181,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [_vm._v("Edit Project")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-lg-6 col-md-12" }, [
-      _c("label", [_vm._v("Image label (Optional)")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c("input", {
-          staticClass: "dropify",
-          attrs: { type: "file", name: "image" }
-        })
-      ])
     ])
   },
   function() {
@@ -42532,7 +42565,17 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(0),
+                    _c("div", { staticClass: "col-lg-6 col-md-12" }, [
+                      _c("label", [_vm._v("Image label (Optional)")]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("input", {
+                          staticClass: "dropify",
+                          attrs: { type: "file", name: "image" },
+                          on: { change: _vm.onFileChange }
+                        })
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-lg-6" }, [
                       _c("div", { staticClass: "form-group" }, [
@@ -42569,7 +42612,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(1)
+                    _vm._m(0)
                   ])
                 ]
               )
@@ -42581,21 +42624,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-lg-6 col-md-12" }, [
-      _c("label", [_vm._v("Image label (Optional)")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c("input", {
-          staticClass: "dropify",
-          attrs: { type: "file", name: "image" }
-        })
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

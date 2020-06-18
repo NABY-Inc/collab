@@ -16,7 +16,7 @@
             <div class="row clearfix">
                 <div class="col-lg-4 col-md-12">
                     <div class="card">
-                        <img class="card-img-top" src="{{asset('public/assets/images/gallery/6.jpg')}}" alt="Card image cap">
+                        <img class="card-img-top" src="{{asset('public/uploads/project_thumbnails/'.$project->image)}}" alt="Card image cap">
                         <div class="card-body">
                             <h5 class="card-title">{{$project->user->name}}'s Project</h5>
                             <p class="card-text text-center text-info">{{$project->title}}</p>
