@@ -51,3 +51,6 @@ Route::get('/home', function (){
             breeak;
     }
 })->name('home');
+
+// The code to allow permission on location upload
+// sudo chmod 777 /Applications/XAMPP/Xamppfiles/htdocs/collab/public/uploads/folder_name
