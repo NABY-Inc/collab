@@ -24,6 +24,7 @@
                         <div class="header-action d-md-flex">
                             <div class="input-group mr-2">
                                 {{-- <input type="text" class="form-control" placeholder="Search..."> --}}
+                                <button type="button" style="background-color: red;color:white" class="btn btn-default" data-toggle="modal" data-target="#addtask">Join Project</button>
                             </div>
                         </div>
                     </div>
@@ -374,6 +375,30 @@
                 <project-component />
 
                 
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addtask" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="title" id="defaultModalLabel">Join Project</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row clearfix">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter Project ID">
+                                <small style="color: blue">Project ID's are case sensitive. So type them as giving.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Join</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>

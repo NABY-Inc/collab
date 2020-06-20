@@ -1910,6 +1910,12 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 //
 //
 //
@@ -1956,7 +1962,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       title: null,
       message: null,
-      file: null,
+      attachments: [],
       errorTitle: false,
       errorMessage: false,
       success: false,
@@ -1977,6 +1983,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
   },
   methods: {
+    onFileChange: function onFileChange(e) {
+      this.attachments = []; // Emptying files array this will reset it
+
+      var selectedFiles = e.target.files;
+
+      for (var i = 0; i < selectedFiles.length; i++) {
+        this.attachments.push(selectedFiles[i]);
+      }
+
+      console.log(this.attachments);
+    },
     createPost: function createPost() {
       var _this2 = this;
 
@@ -1996,21 +2013,45 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           this.updatePost();
         } // When its for creating
         else {
-            axios.post(this.id + '/post', {
-              title: this.title,
-              message: this.message
-            }).then(function (response) {
-              _this2.success = true;
-              setTimeout(function () {
-                _this2.success = false;
-              }, 5000);
-              _this2.title = null;
-              _this2.message = null;
-              _this2.changeToUpdate = false;
+            var fdata = new FormData(); // If user selects a file, we attach to the attachement and save
 
-              _this2.$eventBus.$emit('newPostIn'); // this.$emit('post-created')
-              // console.log(response.data);
+            if (this.attachments.length > 0) {
+              var _iterator = _createForOfIteratorHelper(this.attachments),
+                  _step;
 
+              try {
+                for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                  var file = _step.value;
+                  fdata.append('uploads[]', file);
+                }
+              } catch (err) {
+                _iterator.e(err);
+              } finally {
+                _iterator.f();
+              }
+            }
+
+            fdata.append('title', this.title);
+            fdata.append('message', this.message);
+            axios.post(this.id + '/post', fdata).then(function (response) {
+              if (response.data == true) {
+                _this2.success = true;
+                setTimeout(function () {
+                  _this2.success = false;
+                }, 5000);
+                _this2.title = null;
+                _this2.message = null;
+                _this2.changeToUpdate = false;
+
+                _this2.$eventBus.$emit('newPostIn');
+
+                _this2.$refs.postFiles.value = null;
+                console.log(response.data);
+              } else {
+                _this2.error();
+              }
+            })["catch"](function (err) {
+              _this2.err();
             });
           }
       }
@@ -2064,6 +2105,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           console.log(response.data);
         });
+      });
+    },
+    error: function error() {
+      swal({
+        title: "Oops Something went wrong!",
+        text: "File should be an image,MicroSoft Suite Format or Zip with size not more than 10MB",
+        type: "error"
       });
     }
   }
@@ -2584,6 +2632,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
@@ -2610,7 +2675,8 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       pagination: {},
       posts: [],
       moment: moment,
-      showEditMessage: false
+      showEditMessage: false,
+      fileUrl: 'http://localhost/collab/public/uploads/post_resource/'
     };
   },
   methods: {
@@ -2618,8 +2684,9 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       var _this = this;
 
       axios.get(url || this.project_id + '/userPosts').then(function (response) {
-        _this.paginate(response.data); // console.log(response.data);
+        _this.paginate(response.data);
 
+        console.log(response.data);
       });
     },
     paginate: function paginate(data) {
@@ -41576,7 +41643,20 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "row clearfix" }, [
-              _vm._m(0),
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("input", {
+                    ref: "postFiles",
+                    staticClass: "form-control",
+                    attrs: { type: "file", multiple: "" },
+                    on: { change: _vm.onFileChange }
+                  }),
+                  _vm._v(" "),
+                  _c("small", { attrs: { for: "" } }, [
+                    _vm._v("Upload File (optional)")
+                  ])
+                ])
+              ]),
               _vm._v(" "),
               _c("div", { staticClass: "col-md-6" }, [
                 _c("div", { staticClass: "text-right" }, [
@@ -41708,20 +41788,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6" }, [
-      _c("div", { staticClass: "form-group" }, [
-        _c("input", { staticClass: "form-control", attrs: { type: "file" } }),
-        _vm._v(" "),
-        _c("small", { attrs: { for: "" } }, [_vm._v("Upload File (optional)")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -42682,7 +42749,80 @@ var render = function() {
                   "div",
                   { key: post.id, staticClass: "card blog_single_post" },
                   [
-                    _vm._m(0, true),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "img-post container",
+                        staticStyle: { "max-height": "none" }
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "media_img mt-20 mb-20 ml-20 mr-20 row"
+                          },
+                          _vm._l(post.post_resources, function(file) {
+                            return _c(
+                              "div",
+                              {
+                                key: file.id,
+                                staticClass: "col-md-6 col-xs-6 col-lg-4 mt-3"
+                              },
+                              [
+                                file.file.split(".").pop() == "jpg" ||
+                                file.file.split(".").pop() == "png" ||
+                                file.file.split(".").pop() == "jpeg"
+                                  ? _c("img", {
+                                      staticClass:
+                                        "w200 img-thumbnail img-responsive",
+                                      attrs: {
+                                        src: _vm.fileUrl + file.file,
+                                        alt: "Awesome Image"
+                                      }
+                                    })
+                                  : _c(
+                                      "div",
+                                      { staticClass: "file_folder responsive" },
+                                      [
+                                        _c(
+                                          "a",
+                                          {
+                                            attrs: {
+                                              href: "javascript:void(0);"
+                                            }
+                                          },
+                                          [
+                                            _vm._m(0, true),
+                                            _vm._v(" "),
+                                            _c(
+                                              "div",
+                                              { staticClass: "file-name" },
+                                              [
+                                                _c(
+                                                  "p",
+                                                  {
+                                                    staticClass:
+                                                      "mb-0 text-muted"
+                                                  },
+                                                  [_vm._v(_vm._s(file.file))]
+                                                ),
+                                                _vm._v(" "),
+                                                _c("small", [
+                                                  _vm._v("PCS File")
+                                                ])
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                              ]
+                            )
+                          }),
+                          0
+                        )
+                      ]
+                    ),
                     _vm._v(" "),
                     _c("div", { staticClass: "card-body" }, [
                       _c("h4", [
@@ -42970,14 +43110,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "img-post" }, [
-      _c("img", {
-        staticClass: "d-block img-fluid",
-        attrs: {
-          src: "http://localhost/collab/public/assets/images/gallery/6.jpg",
-          alt: "First slide"
-        }
-      })
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fa fa-file-excel-o text-success" })
     ])
   }
 ]

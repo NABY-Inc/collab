@@ -29,7 +29,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::post('project/allmembers', 'projectController@allMembers'); // Fetching all members
     Route::get('project/{id}/newMembers', 'projectController@nonSelectedMembers'); // Fetching new members
     Route::get('project/removeMember/{id}', 'projectController@removeMember')->name('removeMember'); // Fetching new members
-    Route::post('project/{id}/post','projectPostController@createPost'); // Creating Project Post
+    Route::post('project/{id}/post','projectPostController@postDriver'); // Creating and updating Project Post
     Route::post('project/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
     Route::get('project/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
     Route::get('project/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post

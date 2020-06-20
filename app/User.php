@@ -53,4 +53,16 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
     
+
+    // Relating a Post Resource
+    public function postResouces()
+    {
+        return $this->hasMany(PostResource::class);
+    }
+
+    // Relating to comment Resource
+    public function commentResources()
+    {
+        return $this->hasMany(CommentResource::class);
+    }
 }

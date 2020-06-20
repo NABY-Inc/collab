@@ -14,7 +14,7 @@
                 <div class="row clearfix">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input type="file" class="form-control">
+                            <input type="file" ref="postFiles" class="form-control" @change="onFileChange" multiple>
                             <small for="">Upload File (optional)</small>
                         </div>
                     </div>
@@ -47,7 +47,7 @@ export default {
         return{
             title:null,
             message:null,
-            file:null,
+            attachments:[],
             errorTitle:false,
             errorMessage:false,
             success:false,
@@ -67,6 +67,15 @@ export default {
     },
     methods:{
 
+        onFileChange(e){
+            this.attachments = []; // Emptying files array this will reset it
+            var selectedFiles = e.target.files;
+            for (let i = 0; i < selectedFiles.length; i++) {
+                this.attachments.push(selectedFiles[i]);
+            }
+            console.log(this.attachments);
+        },
+
         createPost(){
             if (this.title == null) {
                 this.errorTitle = true;
@@ -85,23 +94,33 @@ export default {
                 }
                 // When its for creating
                 else{
-                    axios.post(this.id + '/post',{
-                        title:this.title,
-                        message:this.message,
-                    })
-                    .then(response=>{
-                        this.success = true;
-                        setTimeout(() => {
-                            this.success = false;
-                        }, 5000);
-                        this.title = null;
-                        this.message = null;
-                        this.changeToUpdate = false;
-                        this.$eventBus.$emit('newPostIn');
-                        // this.$emit('post-created')
-                        // console.log(response.data);
-                        
-                    })
+                    var fdata = new FormData();
+                        // If user selects a file, we attach to the attachement and save
+                        if(this.attachments.length > 0){  
+                            for(let file of this.attachments){
+                                fdata.append('uploads[]', file);
+                            }
+                        }
+                        fdata.append('title', this.title);
+                        fdata.append('message', this.message);
+
+                    axios.post(this.id + '/post', fdata)
+                    .then( response => {
+                        if (response.data == true) {
+                            this.success = true;
+                            setTimeout(() => {
+                                this.success = false;
+                            }, 5000);
+                            this.title = null;
+                            this.message = null;
+                            this.changeToUpdate = false;
+                            this.$eventBus.$emit('newPostIn');
+                            this.$refs.postFiles.value = null;
+                            console.log(response.data);
+                        }else{
+                            this.error();
+                        }
+                    }).catch(err=>{this.err()});
                 }
             }
         },
@@ -157,7 +176,14 @@ export default {
                         console.log(response.data);
                     })
                 });
+        },
 
+        error(){
+            swal({
+                title:"Oops Something went wrong!",
+                text: "File should be an image,MicroSoft Suite Format or Zip with size not more than 10MB",
+                type: "error"
+            });
         }
 
 

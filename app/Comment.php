@@ -19,4 +19,10 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Relating to comment Resource
+    public function commentResources()
+    {
+        return $this->hasMany(CommentResource::class);
+    }
 }

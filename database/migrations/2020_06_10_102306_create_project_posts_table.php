@@ -19,7 +19,6 @@ class CreateProjectPostsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->longText('message');
-            $table->string('file')->default('no_file.jpg');
             $table->timestamps();
         });
     }

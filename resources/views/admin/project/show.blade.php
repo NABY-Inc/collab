@@ -100,8 +100,8 @@
                                         <i class="fa fa-check text-danger font-30"></i>
                                     </div>
                                     <div class="details">
-                                        <h6 class="mb-0 font600">Total Resources</h6>
-                                        <span class="mb-0">720 Delivered</span>
+                                        <h6 class="mb-0 font600">This Project's Posts</h6>
+                                        <span class="mb-0">{{count($project->projectPosts)}}</span>
                                     </div>
                                 </div>
                             </div>

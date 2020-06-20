@@ -25,4 +25,10 @@ class ProjectPost extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    // Relating Post Resources
+    public function postResources()
+    {
+        return $this->hasMany(PostResource::class);
+    }
 }

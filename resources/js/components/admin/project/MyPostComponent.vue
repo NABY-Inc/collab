@@ -4,8 +4,24 @@
         <createPost v-if="this.project_id != null" :id = "this.project_id"/>
         <div  v-if="this.posts.length > 0">
             <div class="card blog_single_post" v-for="post in Object.assign([],this.posts).reverse()" :key="post.id">
-                <div class="img-post">
-                    <img class="d-block img-fluid" src="http://localhost/collab/public/assets/images/gallery/6.jpg" alt="First slide">
+                <div class="img-post container" style="max-height:none">
+                    <div class="media_img mt-20 mb-20 ml-20 mr-20 row">
+                        <div v-for="file in post.post_resources" :key="file.id" class="col-md-6 col-xs-6 col-lg-4 mt-3">
+                        <img class="w200 img-thumbnail img-responsive"  :src="fileUrl + file.file" alt="Awesome Image" v-if="file.file.split('.').pop() == 'jpg' || file.file.split('.').pop() == 'png' || file.file.split('.').pop() == 'jpeg'">
+                        <div class="file_folder responsive" v-else>
+                            <a href="javascript:void(0);">
+                                <div class="icon">
+                                    <i class="fa fa-file-excel-o text-success"></i>
+                                </div>
+                                <div class="file-name">
+                                    <p class="mb-0 text-muted">{{file.file}}</p>
+                                    <small>PCS File</small>
+                                </div>
+                            </a>
+                        </div>
+
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h4><a href="#">{{post.title}}</a></h4>
@@ -20,6 +36,7 @@
                     </ul>
                 </div>
                 <!-- <hr> -->
+                
                 <ul class="list-group card-list-group" style="margin-top:-5%">
                     <li class="list-group-item py-5">
                         <div class="media">
@@ -97,7 +114,8 @@ export default {
             pagination:{},
             posts:[],
             moment:moment,
-            showEditMessage:false
+            showEditMessage:false,
+            fileUrl:'http://localhost/collab/public/uploads/post_resource/',
         }
     },
     methods:{
@@ -106,7 +124,7 @@ export default {
             axios.get(url || this.project_id + '/userPosts')
             .then(response=>{
                 this.paginate(response.data);
-                // console.log(response.data);
+                console.log(response.data);
             })
         },
 
