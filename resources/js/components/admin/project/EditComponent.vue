@@ -79,7 +79,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label>Prject Description</label>
+                                    <label>Project Description</label>
                                     <textarea name="" class="form-control" id="" cols="30" rows="9" placeholder="Put Description Here..." v-model="description" required></textarea>
                                 </div>
                             </div>
@@ -99,17 +99,17 @@ export default {
     mounted(){
         this.theProject();
         this.allMembers();
-    },
-    props:['project'],
-    created(){
         $('#newMembers').on('change',(event)=>{
             var array; 
             $(event.target).children(':selected').each(()=>{
                 array = $(event.target).val();
             }); 
             this.selectedmembers(array);
+            
         });
     },
+    props:['project'],
+    
     data(){
         return{
             members:[],

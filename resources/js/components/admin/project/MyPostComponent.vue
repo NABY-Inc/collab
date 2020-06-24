@@ -7,15 +7,20 @@
                 <div class="img-post container" style="max-height:none">
                     <div class="media_img mt-20 mb-20 ml-20 mr-20 row">
                         <div v-for="file in post.post_resources" :key="file.id" class="col-md-6 col-xs-6 col-lg-4 mt-3">
-                        <img class="w200 img-thumbnail img-responsive"  :src="fileUrl + file.file" alt="Awesome Image" v-if="file.file.split('.').pop() == 'jpg' || file.file.split('.').pop() == 'png' || file.file.split('.').pop() == 'jpeg'">
+                        <a :href="fileUrl + file.file" target="_blank" data-toggle="tooltip" title="" data-original-title="View Image" 
+                            v-if="file.file.split('.').pop() == 'jpg' || file.file.split('.').pop() == 'png' || file.file.split('.').pop() == 'jpeg'"><img class="w200 img-thumbnail img-responsive"  :src="fileUrl + file.file" alt="Awesome Image"></a>
                         <div class="file_folder responsive" v-else>
                             <a href="javascript:void(0);">
                                 <div class="icon">
-                                    <i class="fa fa-file-excel-o text-success"></i>
+                                    <i class="fa fa-file-o text-success"></i>
                                 </div>
                                 <div class="file-name">
                                     <p class="mb-0 text-muted">{{file.file}}</p>
-                                    <small>PCS File</small>
+                                    <!-- <small>PCS File</small> -->
+                                    <div class="mt-3">
+                                        <i class="fa fa-download font-120" @click="downloadFile(file.file)"></i>
+                                        <i class="fa fa-trash pull-right" @click="deleteFile(file.id, file.file)"></i>
+                                    </div>
                                 </div>
                             </a>
                         </div>
@@ -58,7 +63,7 @@
                                         </div>
                                     </li>
                                 </ul>
-                                <p class="text-center" v-else>No comments for this Post</p>
+                                <p class="text-center mt-5 text-blue" v-else>No comments for this Post</p>
                             </div>
                         </div>
                     </li>
@@ -104,10 +109,6 @@ export default {
         this.$eventBus.$on('comment-deleted', this.userPosts);
         this.$eventBus.$on('comment-added', this.userPosts);
     },
-    // beforeDestroy(){
-    //     this.$eventBus.$off('comment-deleted');
-    //     this.$eventBus.$off('comment-added');
-    // },
     props:['project_id'],
     data(){
         return{
@@ -145,6 +146,59 @@ export default {
                 this.showEditMessage = false
             }, 3000);
             this.$eventBus.$emit('edit-post', {title,message,id});
+        },
+
+        downloadFile(url){
+            var that = this;
+            swal({
+                title:"File downloader!",
+                text: "You are about to download "+url,
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Yes, start download!',
+                closeOnConfirm: false
+            }, function(){
+                axios.post(that.project_id + '/downloadFile',{
+                    url:url,
+                    responseType: 'arraybuffer'
+                })
+                .then(response=>{
+                    that.startDownload(response, url)
+                    swal.close();
+                })
+            });
+        },
+
+        startDownload(response, fileName){
+            var fileType = fileName.split('.').pop();
+            var newBlob = new Blob([response.data], {type: 'application/'+fileType});
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(newBlob);
+            link.download = fileName;
+            link.click();
+        },
+
+        deleteFile(id,url){
+            var that = this;
+            swal({
+                title:"warning!",
+                text: "You are about to delete this file.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Yes, proceed!',
+                closeOnConfirm: false
+            }, function(){
+                axios.post(that.project_id + '/deleteFile',{resource_id:id, url:url})
+                .then(response=>{
+                    that.$eventBus.$emit('newPostIn');
+                    swal({
+                        title:"Success!",
+                        text: "Resource Deleted Successfully!",
+                        type: "success",
+                    })
+                })
+            });
         }
     }
 

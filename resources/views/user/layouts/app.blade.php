@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="{{asset('public/favicon.ico')}}" type="image/x-icon"/>
 
-    <title>@yield('admin_title')</title>
+    <title>@yield('user_title')</title>
 
     <!-- Bootstrap Core and vandor -->
     <link rel="stylesheet" href="{{asset('public/assets/plugins/bootstrap/css/bootstrap.min.css')}}" />
 
     <!-- Plugins css -->
-    @yield('admin_css')
+    @yield('user_css')
 
     <!-- Core css -->
     <link rel="stylesheet" href="{{asset('public/assets/css/main.css')}}" />
@@ -300,18 +300,13 @@
         <nav id="left-sidebar-nav" class="sidebar-nav">
             <ul class="metismenu">
                 <li class="g_heading">Project</li>
-                <li class="{{Request::url() === route('admin.index') ? 'active' : ''}}">
-                    <a href="{{route('admin.index')}}">
+                <li class="{{Request::url() === route('user.index') ? 'active' : ''}}">
+                    <a href="{{route('user.index')}}">
                         <i class="fa fa-dashboard"></i><span>Dashboard</span>
                     </a>
                 </li>
-                <li class="{{Request::url() === route('systemUsers.index') ? 'active' : ''}}">
-                    <a href="{{route('systemUsers.index')}}">
-                        <i class="fa fa-users"></i><span>System Users</span>
-                    </a>
-                </li>
-                <li class="{{Request::url() === route('project.index') || Request::url() === route('project.show', 1) ? 'active' : ''}}">
-                    <a href="{{route('project.index')}}">
+                <li class="{{Request::url() === route('userProject.index') || Request::url() === route('userProject.show', 1) ? 'active' : ''}}">
+                    <a href="{{route('userProject.index')}}">
                         <i class="fa fa-list"></i><span>Project List</span>
                     </a>
                 </li>
@@ -358,7 +353,7 @@
                 <div class="page-header">
                     <div class="left">
                         <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
-                        <h1 class="page-title">@yield('adminPage_heading')</h1>
+                        <h1 class="page-title">@yield('userPage_heading')</h1>
                     </div>
                     <div class="right">
                         <div class="notification d-flex">
@@ -482,7 +477,7 @@
 
         {{--Content Area--}}
 
-        @yield('admin_content')
+        @yield('user_content')
 
         {{--Footer Section--}}
         <div class="section-body">
@@ -516,7 +511,7 @@
 <script src="{{asset('public/assets/js/core.js')}}"></script>
 <script src="{{asset('public/js/app.js')}}"></script>
 
-@yield('admin_js')
+@yield('user_js')
 
 </body>
 

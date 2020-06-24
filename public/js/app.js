@@ -2226,13 +2226,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
-    this.theProject();
-    this.allMembers();
-  },
-  props: ['project'],
-  created: function created() {
     var _this = this;
 
+    this.theProject();
+    this.allMembers();
     $('#newMembers').on('change', function (event) {
       var array;
       $(event.target).children(':selected').each(function () {
@@ -2242,6 +2239,7 @@ __webpack_require__.r(__webpack_exports__);
       _this.selectedmembers(array);
     });
   },
+  props: ['project'],
   data: function data() {
     return {
       members: [],
@@ -2450,7 +2448,7 @@ __webpack_require__.r(__webpack_exports__);
       _this.selectedmembers(array);
     });
   },
-  props: [],
+  props: ['user_role'],
   data: function data() {
     return {
       members: [],
@@ -2472,7 +2470,17 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.loading = true;
-      axios.post('project/allmembers').then(function (response) {
+      var url;
+
+      if (this.user_role == 1) {
+        // When its admin
+        url = 'project/allmembers';
+      } else {
+        // When its normal user
+        url = 'userProject/allmembers';
+      }
+
+      axios.post(url).then(function (response) {
         _this2.members = response.data;
         _this2.loading = false;
       });
@@ -2503,7 +2511,17 @@ __webpack_require__.r(__webpack_exports__);
         fdata.append('code', this.projectCode);
         fdata.append('priority', this.priority);
         fdata.append('description', this.description);
-        axios.post('project', fdata).then(function (response) {
+        var url;
+
+        if (this.user_role == 1) {
+          // When its admin
+          url = 'project';
+        } else {
+          // When its normal user
+          url = 'userProject';
+        }
+
+        axios.post(url, fdata).then(function (response) {
           if (response.data === false) {
             _this3.error();
           } else {
@@ -2649,6 +2667,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
@@ -2665,10 +2688,6 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
     this.$eventBus.$on('comment-deleted', this.userPosts);
     this.$eventBus.$on('comment-added', this.userPosts);
   },
-  // beforeDestroy(){
-  //     this.$eventBus.$off('comment-deleted');
-  //     this.$eventBus.$off('comment-added');
-  // },
   props: ['project_id'],
   data: function data() {
     return {
@@ -2710,6 +2729,59 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         title: title,
         message: message,
         id: id
+      });
+    },
+    downloadFile: function downloadFile(url) {
+      var that = this;
+      swal({
+        title: "File downloader!",
+        text: "You are about to download " + url,
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, start download!',
+        closeOnConfirm: false
+      }, function () {
+        axios.post(that.project_id + '/downloadFile', {
+          url: url,
+          responseType: 'arraybuffer'
+        }).then(function (response) {
+          that.startDownload(response, url);
+          swal.close();
+        });
+      });
+    },
+    startDownload: function startDownload(response, fileName) {
+      var fileType = fileName.split('.').pop();
+      var newBlob = new Blob([response.data], {
+        type: 'application/' + fileType
+      });
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(newBlob);
+      link.download = fileName;
+      link.click();
+    },
+    deleteFile: function deleteFile(id, url) {
+      var that = this;
+      swal({
+        title: "warning!",
+        text: "You are about to delete this file.",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, proceed!',
+        closeOnConfirm: false
+      }, function () {
+        axios.post(that.project_id + '/deleteFile', {
+          resource_id: id,
+          url: url
+        }).then(function (response) {
+          that.$eventBus.$emit('newPostIn');
+          swal({
+            title: "Success!",
+            text: "Resource Deleted Successfully!",
+            type: "success"
+          });
+        });
       });
     }
   }
@@ -42198,7 +42270,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("div", { staticClass: "col-lg-6" }, [
                     _c("div", { staticClass: "form-group" }, [
-                      _c("label", [_vm._v("Prject Description")]),
+                      _c("label", [_vm._v("Project Description")]),
                       _vm._v(" "),
                       _c("textarea", {
                         directives: [
@@ -42772,14 +42844,28 @@ var render = function() {
                                 file.file.split(".").pop() == "jpg" ||
                                 file.file.split(".").pop() == "png" ||
                                 file.file.split(".").pop() == "jpeg"
-                                  ? _c("img", {
-                                      staticClass:
-                                        "w200 img-thumbnail img-responsive",
-                                      attrs: {
-                                        src: _vm.fileUrl + file.file,
-                                        alt: "Awesome Image"
-                                      }
-                                    })
+                                  ? _c(
+                                      "a",
+                                      {
+                                        attrs: {
+                                          href: _vm.fileUrl + file.file,
+                                          target: "_blank",
+                                          "data-toggle": "tooltip",
+                                          title: "",
+                                          "data-original-title": "View Image"
+                                        }
+                                      },
+                                      [
+                                        _c("img", {
+                                          staticClass:
+                                            "w200 img-thumbnail img-responsive",
+                                          attrs: {
+                                            src: _vm.fileUrl + file.file,
+                                            alt: "Awesome Image"
+                                          }
+                                        })
+                                      ]
+                                    )
                                   : _c(
                                       "div",
                                       { staticClass: "file_folder responsive" },
@@ -42807,9 +42893,40 @@ var render = function() {
                                                   [_vm._v(_vm._s(file.file))]
                                                 ),
                                                 _vm._v(" "),
-                                                _c("small", [
-                                                  _vm._v("PCS File")
-                                                ])
+                                                _c(
+                                                  "div",
+                                                  { staticClass: "mt-3" },
+                                                  [
+                                                    _c("i", {
+                                                      staticClass:
+                                                        "fa fa-download font-120",
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.downloadFile(
+                                                            file.file
+                                                          )
+                                                        }
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c("i", {
+                                                      staticClass:
+                                                        "fa fa-trash pull-right",
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.deleteFile(
+                                                            file.id,
+                                                            file.file
+                                                          )
+                                                        }
+                                                      }
+                                                    })
+                                                  ]
+                                                )
                                               ]
                                             )
                                           ]
@@ -43001,9 +43118,13 @@ var render = function() {
                                     ),
                                     0
                                   )
-                                : _c("p", { staticClass: "text-center" }, [
-                                    _vm._v("No comments for this Post")
-                                  ])
+                                : _c(
+                                    "p",
+                                    {
+                                      staticClass: "text-center mt-5 text-blue"
+                                    },
+                                    [_vm._v("No comments for this Post")]
+                                  )
                             ])
                           ])
                         ])
@@ -43111,7 +43232,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fa fa-file-excel-o text-success" })
+      _c("i", { staticClass: "fa fa-file-o text-success" })
     ])
   }
 ]

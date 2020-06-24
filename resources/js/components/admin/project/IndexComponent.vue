@@ -101,9 +101,8 @@ export default {
             // console.log(array);
             this.selectedmembers(array);
         });
-        
     },
-    props:[],
+    props:['user_role'],
     data(){
         return{
             members:[],
@@ -124,7 +123,13 @@ export default {
 
         allMembers(){
             this.loading = true;
-            axios.post('project/allmembers')
+            var url;
+            if (this.user_role == 1) { // When its admin
+                url = 'project/allmembers';    
+            }else{  // When its normal user
+                url = 'userProject/allmembers';
+            }
+            axios.post(url)
             .then(response => {
                 this.members = response.data;
                 this.loading = false;
@@ -150,7 +155,13 @@ export default {
                 fdata.append('category', this.category);        fdata.append('code', this.projectCode);
                 fdata.append('priority', this.priority);        fdata.append('description', this.description);
                 
-                axios.post('project', fdata)
+                var url;
+                if (this.user_role == 1) { // When its admin
+                    url = 'project';    
+                }else{  // When its normal user
+                    url = 'userProject';
+                }
+                axios.post(url, fdata)
                 .then(response=>{
                     if (response.data === false) {
                         this.error();

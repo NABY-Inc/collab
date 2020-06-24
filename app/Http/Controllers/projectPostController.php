@@ -110,6 +110,14 @@ class projectPostController extends Controller
         return true;
     }
 
+    // Delete Resource
+    public function deleteResource(Request $request)
+    {
+        \File::delete(public_path('uploads/post_resource/'.$request->url));
+        \App\PostResource::findOrFail($request->resource_id)->delete();
+        return true;
+    }
+
     // Custom function to add project id
     public function array_push_assoc($array, $key, $value)
     {

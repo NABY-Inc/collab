@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// ADMIN ROUTES
 Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::get('/', 'adminController@index')->name('admin.index');
     Route::resource('systemUsers', 'systemUsersController');
@@ -33,9 +34,35 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::post('project/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
     Route::get('project/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
     Route::get('project/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post
+    Route::post('project/{id}/downloadFile', function(){
+        return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading file
+    });
+    Route::post('project/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Resource
     Route::post('project/{id}/createComment','commentController@addComment'); // Adding comment
     Route::post('project/{id}/deleteComment','commentController@deleteComment'); // Delete comment
     Route::resource('task', 'taskController');
+});
+
+// USER ROUTES
+Route::prefix('user')->middleware(['auth'])->group(function(){
+    Route::get('/', 'userController@index')->name('user.index');
+    Route::resource('userProject', 'projectController');
+    Route::post('userProject/{id}', 'projectController@update');
+    Route::post('userProject/allmembers', 'projectController@allMembers'); // Fetching all members
+    Route::get('userProject/{id}/newMembers', 'projectController@nonSelectedMembers'); // Fetching new members
+    Route::get('userProject/removeMember/{id}', 'projectController@removeMember')->name('removeMember'); // Fetching new members
+    Route::post('userProject/{id}/post','projectPostController@postDriver'); // Creating and updating Project Post
+    Route::post('userProject/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
+    Route::get('userProject/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
+    Route::get('userProject/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post
+    Route::post('userProject/{id}/downloadFile', function(){
+        return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading file
+    });
+    Route::post('userProject/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Resource
+    Route::post('userProject/{id}/createComment','commentController@addComment'); // Adding comment
+    Route::post('userProject/{id}/deleteComment','commentController@deleteComment'); // Delete comment
+    Route::resource('task', 'taskController');
+    // Route::resource('userProject', 'userProjectController');
 });
 
 Route::get('/home', function (){
