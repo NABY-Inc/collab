@@ -36,7 +36,7 @@
             <div class="hleft">
                 <a class="header-brand"><i class="fa fa-cogs brand-logo"></i></a>
                 <div class="dropdown">
-                    <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="{{asset('public/assets/images/user.png')}}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
+                    <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="{{asset('public/uploads/users/'.auth()->user()->img)}}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
                     {{-- <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o" data-toggle="tooltip" data-placement="right" title="Colleagues"></i></a> --}}
                     <a href="app-chat.html"  class="nav-link icon xs-hide"><i class="fa fa-laptop" data-toggle="tooltip" data-placement="right" title="My site"></i></a>
                     <a href="app-filemanager.html"  class="nav-link icon app_file xs-hide"><i class="fa fa-folder-o" data-toggle="tooltip" data-placement="right" title="Repositories"></i></a>
@@ -219,7 +219,7 @@
     <div class="user_div">
         <h5 class="brand-name mb-4">PCS<a href="javascript:void(0)" class="user_btn"><i class="fa fa-close"></i></a></h5>
         <div class="card-body">
-            <a><img class="card-profile-img" src="{{asset('public/assets/images/sm/avatar1.jpg')}}" alt=""></a>
+            <a><img class="card-profile-img" src="{{asset('public/uploads/users/'.auth()->user()->img)}}" alt=""></a>
             <h6 class="mb-0">{{auth()->user()->name}}</h6>
             <span>{{auth()->user()->email}}</span>
             <div class="d-flex align-items-baseline mt-3">

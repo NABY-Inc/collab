@@ -35,9 +35,14 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::get('project/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
     Route::get('project/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post
     Route::post('project/{id}/downloadFile', function(){
-        return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading file
+        if (request()->data == 'comment') {
+            return response()->download(public_path('uploads/comment_resource/'.request()->url)); // Downloading comment file
+        }else{
+            return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading Post file
+        }
     });
-    Route::post('project/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Resource
+    Route::post('project/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Post Resource
+    Route::post('project/{id}/deleteCommentFile','commentController@deleteResource'); // Deleting comment Resource
     Route::post('project/{id}/createComment','commentController@addComment'); // Adding comment
     Route::post('project/{id}/deleteComment','commentController@deleteComment'); // Delete comment
     Route::resource('task', 'taskController');
@@ -56,9 +61,14 @@ Route::prefix('user')->middleware(['auth'])->group(function(){
     Route::get('userProject/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
     Route::get('userProject/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post
     Route::post('userProject/{id}/downloadFile', function(){
-        return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading file
+        if (request()->data == 'comment') {
+            return response()->download(public_path('uploads/comment_resource/'.request()->url)); // Downloading comment file
+        }else{
+            return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading Post file
+        }
     });
-    Route::post('userProject/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Resource
+    Route::post('userProject/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Post Resource
+    Route::post('userProject/{id}/deleteCommentFile','commentController@deleteResource'); // Deleting comment Resource
     Route::post('userProject/{id}/createComment','commentController@addComment'); // Adding comment
     Route::post('userProject/{id}/deleteComment','commentController@deleteComment'); // Delete comment
     Route::resource('task', 'taskController');

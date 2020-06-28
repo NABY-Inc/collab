@@ -8,6 +8,8 @@ class CommentResource extends Model
 {
     protected $guarded = [];
 
+    protected $table = 'comment_resource';
+
     // Relating to user
     public function user()
     {

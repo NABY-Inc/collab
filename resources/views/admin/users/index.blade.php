@@ -54,7 +54,7 @@
                                                     </td>
                                                     <td class="text-center width40">
                                                         <div class="avatar d-block">
-                                                            <img class="avatar" src="{{asset('public/assets/images/xs/avatar4.jpg')}}" alt="avatar">
+                                                            <img class="avatar" src="{{asset('public/uploads/users/'.$user->img)}}" alt="avatar">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -89,7 +89,7 @@
                                     <div class="card ">
                                         <div class="card-body">
                                             <div class="card-status bg-blue"></div>
-                                            <div class="mb-3"> <img src="{{asset('public/assets/images/sm/avatar1.jpg')}}" class="rounded-circle w100" alt=""> </div>
+                                            <div class="mb-3"> <img src="{{asset('public/uploads/users/'.$user->img)}}" class="rounded-circle w100" alt=""> </div>
                                             <div class="mb-2">
                                                 <h5 class="mb-0">{{$user->name}}</h5>
                                                 <p class="text-muted">{{$user->email}}</p>

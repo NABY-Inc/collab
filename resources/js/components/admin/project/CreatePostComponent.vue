@@ -15,7 +15,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <input type="file" ref="postFiles" class="form-control" @change="onFileChange" multiple>
-                            <small for="">Upload File (optional)</small>
+                            <small for="">Upload Files (optional)</small>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -126,24 +126,33 @@ export default {
         },
 
         updatePost(){
-            axios.post(this.id + '/post',{
-                title:this.title,
-                message:this.message,
-                message:this.message,
-                edit_id:this.edit_id,
-            })
+            var fdata = new FormData();
+                // If user selects a file, we attach to the attachement and save
+                if(this.attachments.length > 0){  
+                    for(let file of this.attachments){
+                        fdata.append('uploads[]', file);
+                    }
+                }
+                fdata.append('title', this.title);
+                fdata.append('message', this.message);
+                fdata.append('edit_id', this.edit_id);
+            axios.post(this.id + '/post', fdata)
             .then(response=>{
-                this.successEdit = true;
-                setTimeout(() => {
-                    this.successEdit = false;
-                }, 5000);
-                this.title = null;
-                this.message = null;
-                this.edit_id = null
-                this.changeToUpdate = false;
-                this.$eventBus.$emit('newPostIn');
-                // this.$emit('post-created')
-                // console.log(response.data);
+                if (response.data == true) {
+                    this.successEdit = true;
+                    setTimeout(() => {
+                        this.successEdit = false;
+                    }, 5000);
+                    this.title = null;
+                    this.message = null;
+                    this.edit_id = null
+                    this.changeToUpdate = false;
+                    this.$eventBus.$emit('newPostIn');
+                    this.$refs.postFiles.value = null;
+                    // console.log(response.data);
+                }else{
+                    this.error();
+                }
             })
         },
 
@@ -172,8 +181,7 @@ export default {
                         that.edit_id = null;
                         that.$eventBus.$emit('newPostIn');
                         swal.close();
-                        // this.$emit('post-created')
-                        console.log(response.data);
+                        // console.log(response.data);
                     })
                 });
         },

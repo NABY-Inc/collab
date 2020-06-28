@@ -7,8 +7,12 @@
                 <div class="img-post container" style="max-height:none">
                     <div class="media_img mt-20 mb-20 ml-20 mr-20 row">
                         <div v-for="file in post.post_resources" :key="file.id" class="col-md-6 col-xs-6 col-lg-4 mt-3">
-                        <a :href="fileUrl + file.file" target="_blank" data-toggle="tooltip" title="" data-original-title="View Image" 
-                            v-if="file.file.split('.').pop() == 'jpg' || file.file.split('.').pop() == 'png' || file.file.split('.').pop() == 'jpeg'"><img class="w200 img-thumbnail img-responsive"  :src="fileUrl + file.file" alt="Awesome Image"></a>
+                            <div v-if="file.file.split('.').pop() == 'jpg' || file.file.split('.').pop() == 'png' || file.file.split('.').pop() == 'jpeg'">
+                                <a :href="fileUrl + file.file" target="_blank" data-toggle="tooltip" title="" data-original-title="View Image">
+                                    <img class="w200 img-thumbnail img-responsive"  :src="fileUrl + file.file" alt="Awesome Image">
+                                </a><br>
+                                <a href="#" class="fa fa-trash mt-2" @click="deleteFile(file.id, file.file)"> Delete</a>
+                            </div>
                         <div class="file_folder responsive" v-else>
                             <a href="javascript:void(0);">
                                 <div class="icon">
@@ -18,7 +22,7 @@
                                     <p class="mb-0 text-muted">{{file.file}}</p>
                                     <!-- <small>PCS File</small> -->
                                     <div class="mt-3">
-                                        <i class="fa fa-download font-120" @click="downloadFile(file.file)"></i>
+                                        <i class="fa fa-download font-120" @click="downloadFile(file.file, 'post')"></i>
                                         <i class="fa fa-trash pull-right" @click="deleteFile(file.id, file.file)"></i>
                                     </div>
                                 </div>
@@ -45,7 +49,7 @@
                 <ul class="list-group card-list-group" style="margin-top:-5%">
                     <li class="list-group-item py-5">
                         <div class="media">
-                            <img class="media-object avatar avatar-md mr-4" src="http://localhost/collab/public/assets/images/xs/avatar3.jpg" alt="">
+                            <img class="media-object avatar avatar-md mr-4" :src="userImg + post.user.img" alt="">
                             <div class="media-body">
                                 <div class="media-heading">
                                     <small class="float-right text-muted">{{moment(post.created_at).format('MMM. Do, YYYY')}}</small>
@@ -56,10 +60,34 @@
                                 </div>
                                 <ul class="media-list" v-if="post.comments.length > 0">
                                     <li class="media mt-4" v-for="comment in Object.assign([],post.comments).reverse()" :key="comment.id">
-                                        <img class="media-object avatar mr-4" src="http://localhost/collab/public/assets/images/xs/avatar1.jpg" alt="">
+                                        <img class="media-object avatar mr-4" :src="userImg + comment.user.img" alt="">
                                         <div class="media-body">
                                             <strong>{{comment.user.name}}: </strong>
                                             {{comment.message}}
+                                             <div class="timeline_img row">
+                                                <div v-for="file in comment.comment_resources" :key="file.id" class="col-md-6 col-xs-6 col-lg-4">
+                                                    <div v-if="file.file.split('.').pop() == 'jpg' || file.file.split('.').pop() == 'png' || file.file.split('.').pop() == 'jpeg'">
+                                                        <a :href="commentFileUrl + file.file" target="_blank" data-toggle="tooltip" title="" data-original-title="View Image">
+                                                            <img class="width150 img-responsive"  :src="commentFileUrl + file.file" alt="Awesome Image" height="80" width="50">
+                                                        </a><br>
+                                                        <a v-if="user_id === file.user_id" href="#" class="fa fa-trash mt-2" @click="deleteFile(file.id, file.file)"> Delete</a>
+                                                    </div>
+                                                <div class="file_folder responsive mt-10" v-else>
+                                                    <a href="javascript:void(0);">
+                                                        <div class="icon">
+                                                            <i class="fa fa-file-o text-success"></i>
+                                                        </div>
+                                                        <div class="file-name">
+                                                            <p class="mb-0 text-muted">{{file.file}}</p>
+                                                            <div>
+                                                                <i class="fa fa-download font-120" @click="downloadFile(file.file, 'comment')"></i>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     </li>
                                 </ul>
@@ -117,6 +145,7 @@ export default {
             moment:moment,
             showEditMessage:false,
             fileUrl:'http://localhost/collab/public/uploads/post_resource/',
+            userImg:'http://localhost/collab/public/uploads/users/',
         }
     },
     methods:{
@@ -148,7 +177,7 @@ export default {
             this.$eventBus.$emit('edit-post', {title,message,id});
         },
 
-        downloadFile(url){
+        downloadFile(url,data){
             var that = this;
             swal({
                 title:"File downloader!",
@@ -160,6 +189,7 @@ export default {
             }, function(){
                 axios.post(that.project_id + '/downloadFile',{
                     url:url,
+                    data:data,
                     responseType: 'arraybuffer'
                 })
                 .then(response=>{

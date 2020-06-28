@@ -43,7 +43,7 @@
                                     <li class="online" id="members">
                                         <a href="javascript:void(0);">
                                             <div class="media">
-                                                <img class="media-object " src="{{asset('public/assets/images/xs/avatar4.jpg')}}" alt="">
+                                                <img class="media-object " src="{{asset('public/uploads/users/'.$member->user->img)}}" alt="">
                                                 <div class="media-body">
                                                     <span class="name">{{$member->user->name}}</span>
                                                     <span class="message">PCS00{{$member->user->id}}</span>

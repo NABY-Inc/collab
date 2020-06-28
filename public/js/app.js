@@ -1908,8 +1908,6 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -2057,25 +2055,46 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     updatePost: function updatePost() {
-      var _axios$post,
-          _this3 = this;
+      var _this3 = this;
 
-      axios.post(this.id + '/post', (_axios$post = {
-        title: this.title,
-        message: this.message
-      }, _defineProperty(_axios$post, "message", this.message), _defineProperty(_axios$post, "edit_id", this.edit_id), _axios$post)).then(function (response) {
-        _this3.successEdit = true;
-        setTimeout(function () {
-          _this3.successEdit = false;
-        }, 5000);
-        _this3.title = null;
-        _this3.message = null;
-        _this3.edit_id = null;
-        _this3.changeToUpdate = false;
+      var fdata = new FormData(); // If user selects a file, we attach to the attachement and save
 
-        _this3.$eventBus.$emit('newPostIn'); // this.$emit('post-created')
-        // console.log(response.data);
+      if (this.attachments.length > 0) {
+        var _iterator2 = _createForOfIteratorHelper(this.attachments),
+            _step2;
 
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var file = _step2.value;
+            fdata.append('uploads[]', file);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      }
+
+      fdata.append('title', this.title);
+      fdata.append('message', this.message);
+      fdata.append('edit_id', this.edit_id);
+      axios.post(this.id + '/post', fdata).then(function (response) {
+        if (response.data == true) {
+          _this3.successEdit = true;
+          setTimeout(function () {
+            _this3.successEdit = false;
+          }, 5000);
+          _this3.title = null;
+          _this3.message = null;
+          _this3.edit_id = null;
+          _this3.changeToUpdate = false;
+
+          _this3.$eventBus.$emit('newPostIn');
+
+          _this3.$refs.postFiles.value = null; // console.log(response.data);
+        } else {
+          _this3.error();
+        }
       });
     },
     deletePost: function deletePost() {
@@ -2101,9 +2120,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           that.changeToUpdate = false;
           that.edit_id = null;
           that.$eventBus.$emit('newPostIn');
-          swal.close(); // this.$emit('post-created')
-
-          console.log(response.data);
+          swal.close(); // console.log(response.data);
         });
       });
     },
@@ -2672,6 +2689,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
@@ -2695,7 +2740,8 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       posts: [],
       moment: moment,
       showEditMessage: false,
-      fileUrl: 'http://localhost/collab/public/uploads/post_resource/'
+      fileUrl: 'http://localhost/collab/public/uploads/post_resource/',
+      userImg: 'http://localhost/collab/public/uploads/users/'
     };
   },
   methods: {
@@ -2731,7 +2777,7 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         id: id
       });
     },
-    downloadFile: function downloadFile(url) {
+    downloadFile: function downloadFile(url, data) {
       var that = this;
       swal({
         title: "File downloader!",
@@ -2743,6 +2789,7 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       }, function () {
         axios.post(that.project_id + '/downloadFile', {
           url: url,
+          data: data,
           responseType: 'arraybuffer'
         }).then(function (response) {
           that.startDownload(response, url);
@@ -2798,6 +2845,61 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2892,7 +2994,11 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       comment: null,
       moment: moment,
       username: null,
-      post_id: null
+      post_id: null,
+      postFileUrl: 'http://localhost/collab/public/uploads/post_resource/',
+      commentFileUrl: 'http://localhost/collab/public/uploads/comment_resource/',
+      userImg: 'http://localhost/collab/public/uploads/users/',
+      attachments: []
     };
   },
   created: function created() {
@@ -2906,8 +3012,9 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       var _this = this;
 
       axios.get(url || this.project_id + '/allPosts').then(function (response) {
-        _this.paginate(response.data); // console.log(response.data);
+        _this.paginate(response.data);
 
+        console.log(response.data);
       });
     },
     paginate: function paginate(data) {
@@ -2920,13 +3027,41 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
       this.pagination = pagination;
       this.posts = data.data;
     },
+    onFileChange: function onFileChange(e) {
+      this.attachments = []; // Emptying files array this will reset it
+
+      var selectedFiles = e.target.files;
+
+      for (var i = 0; i < selectedFiles.length; i++) {
+        this.attachments.push(selectedFiles[i]);
+      }
+
+      console.log(this.attachments);
+    },
     addComment: function addComment(id) {
       var _this2 = this;
 
-      axios.post(this.id + '/createComment', {
-        project_post_id: id,
-        message: this.comment
-      }).then(function (response) {
+      var fdata = new FormData(); // If user selects a file, we attach to the attachement and save
+
+      if (this.attachments.length > 0) {
+        var _iterator = _createForOfIteratorHelper(this.attachments),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var file = _step.value;
+            fdata.append('uploads[]', file);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      }
+
+      fdata.append('project_post_id', id);
+      fdata.append('message', this.comment);
+      axios.post(this.id + '/createComment', fdata).then(function (response) {
         _this2.comment = null;
 
         _this2.allPosts();
@@ -2956,10 +3091,60 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
         });
       });
     },
+    downloadFile: function downloadFile(url, data) {
+      var that = this;
+      swal({
+        title: "File downloader!",
+        text: "You are about to download " + url,
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, start download!',
+        closeOnConfirm: false
+      }, function () {
+        axios.post(that.project_id + '/downloadFile', {
+          url: url,
+          data: data,
+          responseType: 'arraybuffer'
+        }).then(function (response) {
+          that.startDownload(response, url);
+          swal.close();
+        });
+      });
+    },
+    startDownload: function startDownload(response, fileName) {
+      var fileType = fileName.split('.').pop();
+      var newBlob = new Blob([response.data], {
+        type: 'application/' + fileType
+      });
+      var link = document.createElement('a');
+      link.href = window.URL.createObjectURL(newBlob);
+      link.download = fileName;
+      link.click();
+    },
     showModal: function showModal(user, post_id) {
       this.username = user;
       this.post_id = post_id;
       $('#addComment').modal('show');
+    },
+    deleteFile: function deleteFile(id, url) {
+      var that = this;
+      swal({
+        title: "warning!",
+        text: "You are about to delete this file.",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, Delete!',
+        closeOnConfirm: false
+      }, function () {
+        axios.post(that.project_id + '/deleteCommentFile', {
+          resource_id: id,
+          url: url
+        }).then(function (response) {
+          that.$eventBus.$emit('newPostIn');
+          swal.close();
+        });
+      });
     }
   }
 });
@@ -41725,7 +41910,7 @@ var render = function() {
                   }),
                   _vm._v(" "),
                   _c("small", { attrs: { for: "" } }, [
-                    _vm._v("Upload File (optional)")
+                    _vm._v("Upload Files (optional)")
                   ])
                 ])
               ]),
@@ -42844,28 +43029,48 @@ var render = function() {
                                 file.file.split(".").pop() == "jpg" ||
                                 file.file.split(".").pop() == "png" ||
                                 file.file.split(".").pop() == "jpeg"
-                                  ? _c(
-                                      "a",
-                                      {
-                                        attrs: {
-                                          href: _vm.fileUrl + file.file,
-                                          target: "_blank",
-                                          "data-toggle": "tooltip",
-                                          title: "",
-                                          "data-original-title": "View Image"
-                                        }
-                                      },
-                                      [
-                                        _c("img", {
-                                          staticClass:
-                                            "w200 img-thumbnail img-responsive",
+                                  ? _c("div", [
+                                      _c(
+                                        "a",
+                                        {
                                           attrs: {
-                                            src: _vm.fileUrl + file.file,
-                                            alt: "Awesome Image"
+                                            href: _vm.fileUrl + file.file,
+                                            target: "_blank",
+                                            "data-toggle": "tooltip",
+                                            title: "",
+                                            "data-original-title": "View Image"
                                           }
-                                        })
-                                      ]
-                                    )
+                                        },
+                                        [
+                                          _c("img", {
+                                            staticClass:
+                                              "w200 img-thumbnail img-responsive",
+                                            attrs: {
+                                              src: _vm.fileUrl + file.file,
+                                              alt: "Awesome Image"
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _c("br"),
+                                      _vm._v(" "),
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass: "fa fa-trash mt-2",
+                                          attrs: { href: "#" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.deleteFile(
+                                                file.id,
+                                                file.file
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [_vm._v(" Delete")]
+                                      )
+                                    ])
                                   : _c(
                                       "div",
                                       { staticClass: "file_folder responsive" },
@@ -42905,7 +43110,8 @@ var render = function() {
                                                           $event
                                                         ) {
                                                           return _vm.downloadFile(
-                                                            file.file
+                                                            file.file,
+                                                            "post"
                                                           )
                                                         }
                                                       }
@@ -43035,8 +43241,7 @@ var render = function() {
                             _c("img", {
                               staticClass: "media-object avatar avatar-md mr-4",
                               attrs: {
-                                src:
-                                  "http://localhost/collab/public/assets/images/xs/avatar3.jpg",
+                                src: _vm.userImg + post.user.img,
                                 alt: ""
                               }
                             }),
@@ -43090,7 +43295,8 @@ var render = function() {
                                                 "media-object avatar mr-4",
                                               attrs: {
                                                 src:
-                                                  "http://localhost/collab/public/assets/images/xs/avatar1.jpg",
+                                                  _vm.userImg +
+                                                  comment.user.img,
                                                 alt: ""
                                               }
                                             }),
@@ -43108,7 +43314,181 @@ var render = function() {
                                                 _vm._v(
                                                   "\n                                        " +
                                                     _vm._s(comment.message) +
-                                                    "\n                                    "
+                                                    "\n                                         "
+                                                ),
+                                                _c(
+                                                  "div",
+                                                  {
+                                                    staticClass:
+                                                      "timeline_img row"
+                                                  },
+                                                  _vm._l(
+                                                    comment.comment_resources,
+                                                    function(file) {
+                                                      return _c(
+                                                        "div",
+                                                        {
+                                                          key: file.id,
+                                                          staticClass:
+                                                            "col-md-6 col-xs-6 col-lg-4"
+                                                        },
+                                                        [
+                                                          file.file
+                                                            .split(".")
+                                                            .pop() == "jpg" ||
+                                                          file.file
+                                                            .split(".")
+                                                            .pop() == "png" ||
+                                                          file.file
+                                                            .split(".")
+                                                            .pop() == "jpeg"
+                                                            ? _c("div", [
+                                                                _c(
+                                                                  "a",
+                                                                  {
+                                                                    attrs: {
+                                                                      href:
+                                                                        _vm.commentFileUrl +
+                                                                        file.file,
+                                                                      target:
+                                                                        "_blank",
+                                                                      "data-toggle":
+                                                                        "tooltip",
+                                                                      title: "",
+                                                                      "data-original-title":
+                                                                        "View Image"
+                                                                    }
+                                                                  },
+                                                                  [
+                                                                    _c("img", {
+                                                                      staticClass:
+                                                                        "width150 img-responsive",
+                                                                      attrs: {
+                                                                        src:
+                                                                          _vm.commentFileUrl +
+                                                                          file.file,
+                                                                        alt:
+                                                                          "Awesome Image",
+                                                                        height:
+                                                                          "80",
+                                                                        width:
+                                                                          "50"
+                                                                      }
+                                                                    })
+                                                                  ]
+                                                                ),
+                                                                _c("br"),
+                                                                _vm._v(" "),
+                                                                _vm.user_id ===
+                                                                file.user_id
+                                                                  ? _c(
+                                                                      "a",
+                                                                      {
+                                                                        staticClass:
+                                                                          "fa fa-trash mt-2",
+                                                                        attrs: {
+                                                                          href:
+                                                                            "#"
+                                                                        },
+                                                                        on: {
+                                                                          click: function(
+                                                                            $event
+                                                                          ) {
+                                                                            return _vm.deleteFile(
+                                                                              file.id,
+                                                                              file.file
+                                                                            )
+                                                                          }
+                                                                        }
+                                                                      },
+                                                                      [
+                                                                        _vm._v(
+                                                                          " Delete"
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  : _vm._e()
+                                                              ])
+                                                            : _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "file_folder responsive mt-10"
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "a",
+                                                                    {
+                                                                      attrs: {
+                                                                        href:
+                                                                          "javascript:void(0);"
+                                                                      }
+                                                                    },
+                                                                    [
+                                                                      _vm._m(
+                                                                        1,
+                                                                        true
+                                                                      ),
+                                                                      _vm._v(
+                                                                        " "
+                                                                      ),
+                                                                      _c(
+                                                                        "div",
+                                                                        {
+                                                                          staticClass:
+                                                                            "file-name"
+                                                                        },
+                                                                        [
+                                                                          _c(
+                                                                            "p",
+                                                                            {
+                                                                              staticClass:
+                                                                                "mb-0 text-muted"
+                                                                            },
+                                                                            [
+                                                                              _vm._v(
+                                                                                _vm._s(
+                                                                                  file.file
+                                                                                )
+                                                                              )
+                                                                            ]
+                                                                          ),
+                                                                          _vm._v(
+                                                                            " "
+                                                                          ),
+                                                                          _c(
+                                                                            "div",
+                                                                            [
+                                                                              _c(
+                                                                                "i",
+                                                                                {
+                                                                                  staticClass:
+                                                                                    "fa fa-download font-120",
+                                                                                  on: {
+                                                                                    click: function(
+                                                                                      $event
+                                                                                    ) {
+                                                                                      return _vm.downloadFile(
+                                                                                        file.file,
+                                                                                        "comment"
+                                                                                      )
+                                                                                    }
+                                                                                  }
+                                                                                }
+                                                                              )
+                                                                            ]
+                                                                          )
+                                                                        ]
+                                                                      )
+                                                                    ]
+                                                                  )
+                                                                ]
+                                                              )
+                                                        ]
+                                                      )
+                                                    }
+                                                  ),
+                                                  0
                                                 )
                                               ]
                                             )
@@ -43234,6 +43614,14 @@ var staticRenderFns = [
     return _c("div", { staticClass: "icon" }, [
       _c("i", { staticClass: "fa fa-file-o text-success" })
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fa fa-file-o text-success" })
+    ])
   }
 ]
 render._withStripped = true
@@ -43275,195 +43663,477 @@ var render = function() {
           ? _c(
               "div",
               { staticClass: "card-body" },
-              _vm._l(this.posts, function(post) {
-                return _c(
-                  "div",
-                  { key: post.id, staticClass: "timeline_item " },
-                  [
-                    _c("img", {
-                      staticClass: "tl_avatar",
-                      attrs: {
-                        src:
-                          "http://localhost/collab/public/assets/images/xs/avatar4.jpg",
-                        alt: ""
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("span", [
-                      _c(
-                        "a",
-                        { attrs: { href: "javascript:void(0);", title: "" } },
-                        [_vm._v(_vm._s(post.user.name))]
-                      ),
+              [
+                _vm._l(this.posts, function(post) {
+                  return _c(
+                    "div",
+                    { key: post.id, staticClass: "timeline_item " },
+                    [
+                      _c("img", {
+                        staticClass: "tl_avatar",
+                        attrs: { src: _vm.userImg + post.user.img, alt: "" }
+                      }),
                       _vm._v(" "),
-                      _c("small", { staticClass: "float-right text-right" }, [
-                        _vm._v(_vm._s(_vm.moment(post.created_at).fromNow()))
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("h6", { staticClass: "font600" }, [
-                      _vm._v(_vm._s(post.title))
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "msg" }, [
-                      _c("p", [_vm._v(_vm._s(post.message))]),
+                      _c("span", [
+                        _c(
+                          "a",
+                          { attrs: { href: "javascript:void(0);", title: "" } },
+                          [_vm._v(_vm._s(post.user.name))]
+                        ),
+                        _vm._v(" "),
+                        _c("small", { staticClass: "float-right text-right" }, [
+                          _vm._v(_vm._s(_vm.moment(post.created_at).fromNow()))
+                        ])
+                      ]),
                       _vm._v(" "),
-                      post.file !== "no_file.jpg"
-                        ? _c("div", { staticClass: "timeline_img mb-20" }, [
-                            _c("img", {
-                              staticClass: "width100",
-                              attrs: {
-                                src:
-                                  "http://localhost/collab/public/assets/images/gallery/1.jpg",
-                                alt: "Awesome Image"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("img", {
-                              staticClass: "width100",
-                              attrs: {
-                                src:
-                                  "http://localhost/collab/public/assets/images/gallery/2.jpg",
-                                alt: "Awesome Image"
-                              }
-                            })
-                          ])
-                        : _vm._e(),
+                      _c("h6", { staticClass: "font600" }, [
+                        _vm._v(_vm._s(post.title))
+                      ]),
                       _vm._v(" "),
-                      _c(
-                        "a",
-                        {
-                          staticClass: "text-muted",
-                          attrs: {
-                            role: "button",
-                            "data-toggle": "collapse",
-                            href: "#collapseExample1",
-                            "aria-expanded": "false",
-                            "aria-controls": "collapseExample1"
-                          }
-                        },
-                        [
-                          _c("i", { staticClass: "fa fa-comments text-blue" }),
-                          _vm._v(
-                            " " +
-                              _vm._s(
-                                post.comments.length > 0
-                                  ? post.comments.length
-                                  : 0
-                              ) +
-                              " Comment\n                    "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "collapse p-4 section-gray show mt-3",
-                          attrs: { id: "collapseExample1" }
-                        },
-                        [
-                          _c(
-                            "a",
-                            {
-                              attrs: { href: "" },
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.showModal(
-                                    post.user.name + "'s post",
-                                    post.id
-                                  )
-                                }
-                              }
-                            },
-                            [
-                              _c("i", { staticClass: "fa fa-plus" }),
-                              _vm._v(" Add Comment")
-                            ]
-                          ),
-                          _vm._v(" "),
-                          post.comments.length > 0
-                            ? _c(
-                                "ul",
-                                {
-                                  staticClass:
-                                    "recent_comments list-unstyled mt-4 mb-0"
-                                },
-                                _vm._l(
-                                  Object.assign([], post.comments).reverse(),
-                                  function(comment) {
-                                    return _c("li", { key: comment.id }, [
-                                      _vm._m(1, true),
-                                      _vm._v(" "),
+                      _c("div", { staticClass: "msg" }, [
+                        _c("p", [_vm._v(_vm._s(post.message))]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "timeline_img row" },
+                          _vm._l(post.post_resources, function(file) {
+                            return _c(
+                              "div",
+                              {
+                                key: file.id,
+                                staticClass:
+                                  "col-md-6 col-xs-6 col-lg-4 mt-3 mb-3"
+                              },
+                              [
+                                file.file.split(".").pop() == "jpg" ||
+                                file.file.split(".").pop() == "png" ||
+                                file.file.split(".").pop() == "jpeg"
+                                  ? _c("div", [
                                       _c(
-                                        "div",
-                                        { staticClass: "comment_body" },
+                                        "a",
+                                        {
+                                          attrs: {
+                                            href: _vm.postFileUrl + file.file,
+                                            target: "_blank",
+                                            "data-toggle": "tooltip",
+                                            title: "",
+                                            "data-original-title": "View Image"
+                                          }
+                                        },
                                         [
-                                          _c("h6", [
-                                            _vm._v(
-                                              _vm._s(comment.user.name) + " "
-                                            ),
-                                            _vm.user_id === comment.user.id
-                                              ? _c("a", {
-                                                  staticClass:
-                                                    "fa fa-trash text-danger ml-2",
-                                                  attrs: { href: "" },
-                                                  on: {
-                                                    click: function($event) {
-                                                      $event.preventDefault()
-                                                      return _vm.deleteComment(
-                                                        comment.id
-                                                      )
-                                                    }
-                                                  }
-                                                })
-                                              : _vm._e(),
-                                            _vm._v(" "),
-                                            _c(
-                                              "small",
-                                              {
-                                                staticClass:
-                                                  "float-right font-14"
-                                              },
-                                              [
-                                                _vm._v(
-                                                  _vm._s(
-                                                    _vm
-                                                      .moment(
-                                                        comment.created_at
-                                                      )
-                                                      .fromNow()
-                                                  )
-                                                )
-                                              ]
-                                            )
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("p", [
-                                            _vm._v(_vm._s(comment.message))
-                                          ])
+                                          _c("img", {
+                                            staticClass:
+                                              "w200 img-thumbnail img-responsive",
+                                            attrs: {
+                                              src: _vm.postFileUrl + file.file,
+                                              alt: "Awesome Image"
+                                            }
+                                          })
                                         ]
                                       )
                                     ])
+                                  : _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "file_folder responsive mr-10"
+                                      },
+                                      [
+                                        _c(
+                                          "a",
+                                          {
+                                            attrs: {
+                                              href: "javascript:void(0);"
+                                            }
+                                          },
+                                          [
+                                            _vm._m(1, true),
+                                            _vm._v(" "),
+                                            _c(
+                                              "div",
+                                              { staticClass: "file-name" },
+                                              [
+                                                _c(
+                                                  "p",
+                                                  {
+                                                    staticClass:
+                                                      "mb-0 text-muted"
+                                                  },
+                                                  [_vm._v(_vm._s(file.file))]
+                                                ),
+                                                _vm._v(" "),
+                                                _c("div", [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "fa fa-download font-120",
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.downloadFile(
+                                                          file.file,
+                                                          "post"
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ])
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                              ]
+                            )
+                          }),
+                          0
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "text-muted",
+                            attrs: {
+                              role: "button",
+                              "data-toggle": "collapse",
+                              href: "#collapseExample1",
+                              "aria-expanded": "false",
+                              "aria-controls": "collapseExample1"
+                            }
+                          },
+                          [
+                            _c("i", {
+                              staticClass: "fa fa-comments text-blue"
+                            }),
+                            _vm._v(
+                              " " +
+                                _vm._s(
+                                  post.comments.length > 0
+                                    ? post.comments.length
+                                    : 0
+                                ) +
+                                " Comment\n                    "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "collapse p-4 section-gray show mt-3",
+                            attrs: { id: "collapseExample1" }
+                          },
+                          [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.showModal(
+                                      post.user.name + "'s post",
+                                      post.id
+                                    )
                                   }
-                                ),
-                                0
-                              )
-                            : _c("p", { staticClass: "tex-center mt-3" }, [
-                                _vm._v("No comment(s) on this post.")
-                              ])
-                        ]
-                      )
-                    ])
-                  ]
-                )
-              }),
-              0
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-plus" }),
+                                _vm._v(" Add Comment")
+                              ]
+                            ),
+                            _vm._v(" "),
+                            post.comments.length > 0
+                              ? _c(
+                                  "ul",
+                                  {
+                                    staticClass:
+                                      "recent_comments list-unstyled mt-4 mb-0"
+                                  },
+                                  _vm._l(
+                                    Object.assign([], post.comments).reverse(),
+                                    function(comment) {
+                                      return _c("li", { key: comment.id }, [
+                                        _c(
+                                          "div",
+                                          { staticClass: "avatar_img" },
+                                          [
+                                            _c("img", {
+                                              staticClass: "rounded img-fluid",
+                                              attrs: {
+                                                src:
+                                                  _vm.userImg +
+                                                  comment.user.img,
+                                                alt: ""
+                                              }
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "comment_body" },
+                                          [
+                                            _c("h6", [
+                                              _vm._v(
+                                                _vm._s(comment.user.name) + " "
+                                              ),
+                                              _vm.user_id === comment.user.id
+                                                ? _c("a", {
+                                                    staticClass:
+                                                      "fa fa-trash text-danger ml-2",
+                                                    attrs: { href: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        $event.preventDefault()
+                                                        return _vm.deleteComment(
+                                                          comment.id
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                : _vm._e(),
+                                              _vm._v(" "),
+                                              _c(
+                                                "small",
+                                                {
+                                                  staticClass:
+                                                    "float-right font-14"
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(
+                                                      _vm
+                                                        .moment(
+                                                          comment.created_at
+                                                        )
+                                                        .fromNow()
+                                                    )
+                                                  )
+                                                ]
+                                              )
+                                            ]),
+                                            _vm._v(" "),
+                                            _c("p", [
+                                              _vm._v(_vm._s(comment.message))
+                                            ]),
+                                            _vm._v(" "),
+                                            _c(
+                                              "div",
+                                              {
+                                                staticClass: "timeline_img row"
+                                              },
+                                              _vm._l(
+                                                comment.comment_resources,
+                                                function(file) {
+                                                  return _c(
+                                                    "div",
+                                                    {
+                                                      key: file.id,
+                                                      staticClass:
+                                                        "col-md-6 col-xs-6 col-lg-4"
+                                                    },
+                                                    [
+                                                      file.file
+                                                        .split(".")
+                                                        .pop() == "jpg" ||
+                                                      file.file
+                                                        .split(".")
+                                                        .pop() == "png" ||
+                                                      file.file
+                                                        .split(".")
+                                                        .pop() == "jpeg"
+                                                        ? _c("div", [
+                                                            _c(
+                                                              "a",
+                                                              {
+                                                                attrs: {
+                                                                  href:
+                                                                    _vm.commentFileUrl +
+                                                                    file.file,
+                                                                  target:
+                                                                    "_blank",
+                                                                  "data-toggle":
+                                                                    "tooltip",
+                                                                  title: "",
+                                                                  "data-original-title":
+                                                                    "View Image"
+                                                                }
+                                                              },
+                                                              [
+                                                                _c("img", {
+                                                                  staticClass:
+                                                                    "width150 img-responsive",
+                                                                  attrs: {
+                                                                    src:
+                                                                      _vm.commentFileUrl +
+                                                                      file.file,
+                                                                    alt:
+                                                                      "Awesome Image",
+                                                                    height:
+                                                                      "80",
+                                                                    width: "50"
+                                                                  }
+                                                                })
+                                                              ]
+                                                            ),
+                                                            _c("br"),
+                                                            _vm._v(" "),
+                                                            _vm.user_id ===
+                                                            file.user_id
+                                                              ? _c(
+                                                                  "a",
+                                                                  {
+                                                                    staticClass:
+                                                                      "fa fa-trash mt-2",
+                                                                    attrs: {
+                                                                      href: "#"
+                                                                    },
+                                                                    on: {
+                                                                      click: function(
+                                                                        $event
+                                                                      ) {
+                                                                        return _vm.deleteFile(
+                                                                          file.id,
+                                                                          file.file
+                                                                        )
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      " Delete"
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              : _vm._e()
+                                                          ])
+                                                        : _c(
+                                                            "div",
+                                                            {
+                                                              staticClass:
+                                                                "file_folder responsive mr-10"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "a",
+                                                                {
+                                                                  attrs: {
+                                                                    href:
+                                                                      "javascript:void(0);"
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _vm._m(
+                                                                    2,
+                                                                    true
+                                                                  ),
+                                                                  _vm._v(" "),
+                                                                  _c(
+                                                                    "div",
+                                                                    {
+                                                                      staticClass:
+                                                                        "file-name"
+                                                                    },
+                                                                    [
+                                                                      _c(
+                                                                        "p",
+                                                                        {
+                                                                          staticClass:
+                                                                            "mb-0 text-muted"
+                                                                        },
+                                                                        [
+                                                                          _vm._v(
+                                                                            _vm._s(
+                                                                              file.file
+                                                                            )
+                                                                          )
+                                                                        ]
+                                                                      ),
+                                                                      _vm._v(
+                                                                        " "
+                                                                      ),
+                                                                      _c(
+                                                                        "div",
+                                                                        [
+                                                                          _c(
+                                                                            "i",
+                                                                            {
+                                                                              staticClass:
+                                                                                "fa fa-download font-120",
+                                                                              on: {
+                                                                                click: function(
+                                                                                  $event
+                                                                                ) {
+                                                                                  return _vm.downloadFile(
+                                                                                    file.file,
+                                                                                    "comment"
+                                                                                  )
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                          ),
+                                                                          _vm._v(
+                                                                            " "
+                                                                          ),
+                                                                          _vm.user_id ===
+                                                                          file.user_id
+                                                                            ? _c(
+                                                                                "i",
+                                                                                {
+                                                                                  staticClass:
+                                                                                    "fa fa-trash pull-right",
+                                                                                  on: {
+                                                                                    click: function(
+                                                                                      $event
+                                                                                    ) {
+                                                                                      return _vm.deleteFile(
+                                                                                        file.id,
+                                                                                        file.file
+                                                                                      )
+                                                                                    }
+                                                                                  }
+                                                                                }
+                                                                              )
+                                                                            : _vm._e()
+                                                                        ]
+                                                                      )
+                                                                    ]
+                                                                  )
+                                                                ]
+                                                              )
+                                                            ]
+                                                          )
+                                                    ]
+                                                  )
+                                                }
+                                              ),
+                                              0
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    }
+                                  ),
+                                  0
+                                )
+                              : _c("p", { staticClass: "tex-center mt-3" }, [
+                                  _vm._v("No comment(s) on this post.")
+                                ])
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                }),
+                _vm._v(" "),
+                _c("hr")
+              ],
+              2
             )
-          : _vm._e(),
-        _vm._v(" "),
-        _c("hr"),
+          : _c("p", { staticClass: "text-center mt-3" }, [
+              _vm._v("Empty Timeline Activities")
+            ]),
         _vm._v(" "),
         _vm.pagination.prev_page_url != null ||
         _vm.pagination.next_page_url != null
@@ -43542,9 +44212,7 @@ var render = function() {
                 )
               ])
             ])
-          : _c("p", { staticClass: "text-center" }, [
-              _vm._v("Empty Timeline Activities")
-            ]),
+          : _vm._e(),
         _vm._v(" "),
         _c(
           "div",
@@ -43617,6 +44285,19 @@ var render = function() {
                           })
                         ]),
                         _vm._v(" "),
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("input", {
+                            ref: "postFiles",
+                            staticClass: "form-control",
+                            attrs: { type: "file", multiple: "" },
+                            on: { change: _vm.onFileChange }
+                          }),
+                          _vm._v(" "),
+                          _c("small", { attrs: { for: "" } }, [
+                            _vm._v("Upload Files (optional)")
+                          ])
+                        ]),
+                        _vm._v(" "),
                         _c(
                           "button",
                           {
@@ -43650,14 +44331,16 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "avatar_img" }, [
-      _c("img", {
-        staticClass: "rounded img-fluid",
-        attrs: {
-          src: "http://localhost/collab/public/assets/images/xs/avatar3.jpg",
-          alt: ""
-        }
-      })
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fa fa-file-o text-success" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fa fa-file-o text-success" })
     ])
   }
 ]

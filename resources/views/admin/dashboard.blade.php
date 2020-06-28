@@ -81,7 +81,7 @@
                                             <td>PCS00{{$user->id}}</td>
                                             <td>
                                                 <ul class="list-unstyled team-info sm margin-0 w150">
-                                                    <li><img src="{{asset('public/assets/images/xs/avatar1.jpg')}}" alt="Avatar"></li>
+                                                    <li><img src="{{asset('public/uploads/users/'.$user->img)}}" alt="Avatar"></li>
                                                     &nbsp;&nbsp;&nbsp;
                                                     <li>{{$user->name}}</li>
                                                 </ul>

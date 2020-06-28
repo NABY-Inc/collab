@@ -17,7 +17,7 @@ class CreateCommentResourceTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('comment_id');
-            $table->string('files');
+            $table->string('file');
             $table->timestamps();
         });
     }
