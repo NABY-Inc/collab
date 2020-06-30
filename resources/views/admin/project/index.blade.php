@@ -59,7 +59,7 @@
                                                 <div class="col-5 py-1"><strong>Estimated End Date:</strong></div>
                                                 <div class="col-7 py-1">{{\Carbon\carbon::parse($project->dateTo)->toFormattedDateString()}}</div>
                                                 <div class="col-5 py-1"><strong>Code:</strong></div>
-                                                <div class="col-7 py-1"><strong>{{$project->code}}</strong></div>
+                                                <div class="col-7 py-1"><strong>{{$project->user_id == auth()->user()->id ? $project->code : 'Ask project owner'}}</strong></div>
                                                 <div class="col-5 py-1"><strong>Team:</strong></div>
                                                 <div class="col-7 py-1"><span class="">{{count($project->members)}} MEMBER(S)</span></div>
                                             </div>
@@ -106,7 +106,7 @@
                                                         <tr>
                                                             <td><img src="{{asset('public/uploads/users/'.$project->user->img)}}" alt="Avatar" class="w30 rounded-circle mr-2"> <span>{{$project->user->name}}</span></td>
                                                             <td>{{$project->title}}</td>
-                                                            <td>{{$project->code}}</td>
+                                                            <td>{{$project->user_id == auth()->user()->id ? $project->code : 'Ask project owner'}}</td>
                                                             <td><span>{{\Carbon\carbon::parse($project->dateFrom)->toFormattedDateString()}}</span></td>
                                                             <td><span class="text-warning">{{$project->priority}}</span></td>
                                                         </tr>
@@ -126,7 +126,7 @@
                     </div>
                 </div>
 
-                <project-component />
+                <project-component :user_role="{{auth()->user()->role}}"/>
 
                 
             </div>
@@ -135,25 +135,29 @@
 
     <div class="modal fade" id="addtask" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="title" id="defaultModalLabel">Join Project</h6>
-                </div>
-                <div class="modal-body">
-                    <div class="row clearfix">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Project ID">
-                                <small style="color: blue">Project ID's are case sensitive. So type them as giving.</small>
+            <form action="{{route('joinProject')}}" method="POST" class="joinProject">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="title" id="defaultModalLabel">Join Project</h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row clearfix">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <input type="text" id="code" class="form-control" placeholder="Enter Project ID" required name="code">
+                                    <small style="color: blue">Project ID's are case sensitive. So type them as giving.</small>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" id="token" value="{{csrf_token()}}">
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Join</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Join</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 @endsection
@@ -194,6 +198,34 @@
                 }
             });
 
+
+            $('.joinProject').submit(function(e){
+                e.preventDefault();
+                var  code = $('#code').val();
+                var  token = $('#token').val();
+                var url = $(this).attr('action');
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {'code':code,'_token':token},
+                    success:function(response){
+                        if (response == 2) {
+                            swal("Error!", "Invalid Code! Please check and retry.", "error");
+                        }else if(response == 0){
+                            swal("Oops!", "You are already part of this project.", "error");
+                        }else if(response == 1){
+                            swal({
+                                title:"Success!",
+                                text: "You are part of the project now.",
+                                type: "success",
+                            }, function(){
+                                location.reload();
+                           });
+                        }
+                    }
+                });
+                    
+            })
 
         });
     </script>

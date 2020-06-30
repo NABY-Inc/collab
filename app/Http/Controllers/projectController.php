@@ -168,6 +168,28 @@ class projectController extends Controller
         return true;
     }
 
+    // Join Project
+    public function joinProject(Request $request)
+    {
+        $code = $request->validate(['code'=>'required']);
+        $data = \App\Project::where('code',$code)->first(); // Getting the code from db just as user enter
+        if ($data != null) { // Checking if code exist
+            $members=[]; // Will store user id's in here
+            $projectMembers = \App\ProjectMember::where('project_id', $data->id)->select('user_id')->get(); // Getting project members
+            foreach ($projectMembers as $key) { // Looping to store user id
+                array_push($members, $key->user_id); // Adding id into array container
+            }
+            if (in_array(auth()->user()->id, $members)) { // Checking if user data is in array
+                return 0; // Already in project
+            }else {
+                \App\ProjectMember::create(['project_id' => $data->id, 'user_id' => auth()->user()->id]);
+                return 1; // Successful added
+            }
+        }else{
+            return 2; // Wrong code
+        }
+    }
+
     // Custom function to add image
     public function array_push_assoc($array, $key, $value)
     {

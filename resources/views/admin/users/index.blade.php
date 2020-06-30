@@ -21,14 +21,14 @@
                                 <div class="d-flex align-items-center sort_stat">
                                     <div class="d-flex">
                                         <div class="ml-2">
-                                            <p class="mb-0 font-11">Total Users</p>
+                                            <p class="mb-0 font-11">Total Users showing on this page</p>
                                             <h5 class="font-16 mb-0 text-center">{{count($systemUsers)}}</h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-group mt-2">
-                                <input type="text" class="form-control search" placeholder="Search...">
+                                {{-- <input type="text" class="form-control search" placeholder="Search..."> --}}
                             </div>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
-                                                <input type="file" class="dropify" name="image">
+                                                <input type="file" class="dropify" name="img">
                                             </div>
                                             <div class="col-lg-12 mt-3">
                                                 <button type="submit" class="btn btn-primary">Add</button>
@@ -163,7 +163,7 @@
                 <div class="modal-header">
                     <h6 class="title" id="defaultModalLabel">Update user profile</h6>
                 </div>
-                <form id="updateUser" method="GET">
+                <form id="updateUser" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="row clearfix">
@@ -201,11 +201,12 @@
                             </div>
                             <div class="col-12">
                                 <label>Image</label>
-                                <input type="file" class="dropify" name="image">
+                                <input type="file" class="dropify" name="img">
                             </div>
                         </div>
                     </div>
                     <input type="hidden" name="user_id" id="userID">
+                    <input type="hidden" name="oldImage" id="oldImage">
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -294,6 +295,7 @@
                         $("#contact").val(response.contact);
                         $("#email").val(response.email);
                         $("#userID").val(response.id);
+                        $("#oldImage").val(response.img);
                         $("#user_role").val(response.role).change();
                         $('#updateUser').attr("action", "{{route('systemUser.updateNew')}}");
                         $('#editUser').modal('show');
@@ -306,7 +308,7 @@
             @elseif($success == 2)
                 swal("Success!", "User updated Successfully!", "success");
             @elseif($error)
-                swal("Error!", "Something went Wrong!", "error");
+                swal("Error!", "Something went Wrong! Email should be unique. Profile should be an Image with size of 2MB or less", "error");
             @endif
         });
     </script>

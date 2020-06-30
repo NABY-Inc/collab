@@ -24,11 +24,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::get('/', 'adminController@index')->name('admin.index');
     Route::resource('systemUsers', 'systemUsersController');
     Route::get('systemUser/toggleActivate/{id}', 'systemUsersController@toggleActive')->name('toggleActive');
-    Route::get('systemUser/updateNew', 'systemUsersController@updateNew')->name('systemUser.updateNew');
+    Route::post('systemUser/updateNew', 'systemUsersController@updateNew')->name('systemUser.updateNew');
     Route::resource('project', 'projectController');
     Route::post('project/{id}', 'projectController@update');
-    Route::post('project/allmembers', 'projectController@allMembers'); // Fetching all members
+    Route::post('allmembers', 'projectController@allMembers'); // Fetching all members
     Route::get('project/{id}/newMembers', 'projectController@nonSelectedMembers'); // Fetching new members
+    Route::post('joinProject', 'projectController@joinProject')->name('joinProject'); // Joining Project
     Route::get('project/removeMember/{id}', 'projectController@removeMember')->name('removeMember'); // Fetching new members
     Route::post('project/{id}/post','projectPostController@postDriver'); // Creating and updating Project Post
     Route::post('project/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
@@ -53,9 +54,10 @@ Route::prefix('user')->middleware(['auth'])->group(function(){
     Route::get('/', 'userController@index')->name('user.index');
     Route::resource('userProject', 'projectController');
     Route::post('userProject/{id}', 'projectController@update');
-    Route::post('userProject/allmembers', 'projectController@allMembers'); // Fetching all members
+    Route::post('allmembers', 'projectController@allMembers'); // Fetching all members
     Route::get('userProject/{id}/newMembers', 'projectController@nonSelectedMembers'); // Fetching new members
     Route::get('userProject/removeMember/{id}', 'projectController@removeMember')->name('removeMember'); // Fetching new members
+    Route::post('joinProject', 'projectController@joinProject')->name('joinProject'); // Joining Project
     Route::post('userProject/{id}/post','projectPostController@postDriver'); // Creating and updating Project Post
     Route::post('userProject/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
     Route::get('userProject/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post

@@ -23,6 +23,11 @@ class systemUsersController extends Controller
     {
         try {
             $data = $this->validateData(); // Calling validate data
+            if ($request->hasFile('img')) {
+                $fileName = time().'.'.$request->file('img')->getClientOriginalExtension();
+                $request->file('img')->move(public_path('uploads/users'), $fileName);
+                $data = $this->array_push_assoc($data, 'img', $fileName);
+            }
             $data = $this->array_push_assoc($data, 'password', bcrypt('pcsuser')); // Adding password to the data
             'App\User'::create($data); // Creating the user
             $this->success = 1;
@@ -44,6 +49,15 @@ class systemUsersController extends Controller
     {
         try {
             $data = $this->validateData(); // Calling validate data
+            if ($request->hasFile('img')) {
+                $fileName = time().'.'.$request->file('img')->getClientOriginalExtension();
+                // If image already exists
+                if ($request->oldImage != 'default.jpg' && \File::exists(public_path('uploads/users/'.$request->oldImage))) {
+                    \File::delete(public_path('uploads/users/'.$request->oldImage));
+                }
+                $request->file('img')->move(public_path('uploads/users'), $fileName);
+                $data = $this->array_push_assoc($data, 'img', $fileName);
+            }
             if ($request->resetPass == 1) { // Checking if we want to reset password
                 $data = $this->array_push_assoc($data, 'password', bcrypt('pcsuser')); // Adding password to the data
             }
@@ -51,6 +65,7 @@ class systemUsersController extends Controller
             $this->success = 2;
             return $this->index();
         } catch (\Exception $e) {
+            $this->error = 1;
             return $this->index();
         }
     }
@@ -62,7 +77,8 @@ class systemUsersController extends Controller
             'name'     => 'required',
             'contact'  => 'required',
             'email'    => 'required',
-            'role'     => 'required'
+            'role'     => 'required',
+            'img'      => 'sometimes|image|mimes:png,jpg,jpeg|max:2048',
         ]);
         return $data;
     }

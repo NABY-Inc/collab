@@ -123,13 +123,8 @@ export default {
 
         allMembers(){
             this.loading = true;
-            var url;
-            if (this.user_role == 1) { // When its admin
-                url = 'project/allmembers';    
-            }else{  // When its normal user
-                url = 'userProject/allmembers';
-            }
-            axios.post(url)
+            var allMemebersurl;
+            axios.post('allmembers')
             .then(response => {
                 this.members = response.data;
                 this.loading = false;

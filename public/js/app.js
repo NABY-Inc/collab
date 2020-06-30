@@ -2487,17 +2487,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.loading = true;
-      var url;
-
-      if (this.user_role == 1) {
-        // When its admin
-        url = 'project/allmembers';
-      } else {
-        // When its normal user
-        url = 'userProject/allmembers';
-      }
-
-      axios.post(url).then(function (response) {
+      var allMemebersurl;
+      axios.post('allmembers').then(function (response) {
         _this2.members = response.data;
         _this2.loading = false;
       });

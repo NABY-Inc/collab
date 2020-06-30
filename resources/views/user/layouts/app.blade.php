@@ -38,7 +38,7 @@
                 <div class="dropdown">
                     <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="{{asset('public/uploads/users/'.auth()->user()->img)}}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
                     {{-- <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o" data-toggle="tooltip" data-placement="right" title="Colleagues"></i></a> --}}
-                    <a href="app-chat.html"  class="nav-link icon xs-hide"><i class="fa fa-laptop" data-toggle="tooltip" data-placement="right" title="My site"></i></a>
+                    {{-- <a href="app-chat.html"  class="nav-link icon xs-hide"><i class="fa fa-laptop" data-toggle="tooltip" data-placement="right" title="My site"></i></a> --}}
                     <a href="app-filemanager.html"  class="nav-link icon app_file xs-hide"><i class="fa fa-folder-o" data-toggle="tooltip" data-placement="right" title="Repositories"></i></a>
                     <a href="javascript:void(0)" class="nav-link icon theme_btn xs-hide"><i class="fa fa-support" data-toggle="tooltip" data-placement="right" title="Help"></i></a>
                 </div>
@@ -307,20 +307,20 @@
                 </li>
                 <li class="{{Request::url() === route('userProject.index') || Request::url() === route('userProject.show', 1) ? 'active' : ''}}">
                     <a href="{{route('userProject.index')}}">
-                        <i class="fa fa-list"></i><span>Project List</span>
+                        <i class="fa fa-list"></i><span>Projects</span>
                     </a>
                 </li>
-                <li class="{{Request::url() === route('task.index') || Request::url() === route('task.show', 1) ? 'active' : ''}}">
+                {{-- <li class="{{Request::url() === route('task.index') || Request::url() === route('task.show', 1) ? 'active' : ''}}">
                     <a href="{{route('task.index')}}">
                         <i class="fa fa-check-square-o"></i><span>Tasks</span>
                     </a>
-                </li>
+                </li> --}}
                 <li class="g_heading">App</li>
-                <li>
+                {{-- <li>
                     <a href="app-chat.html">
                         <i class="fa fa-laptop"></i><span>My Site</span>
                     </a>
-                </li>
+                </li> --}}
                 {{-- <li>
                     <a href="app-contact.html">
                         <i class="fa fa-address-book"></i><span>Colleagues</span>
