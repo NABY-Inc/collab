@@ -35,13 +35,20 @@ Route::prefix('admin')->middleware(['auth'])->group(function(){
     Route::post('project/{id}/deletePost','projectPostController@deletePost'); // Deleting Project Post
     Route::get('project/{id}/allPosts','projectPostController@allPosts'); // Getting All Project Post
     Route::get('project/{id}/userPosts','projectPostController@userPosts'); // Getting User Project Post
-    Route::post('project/{id}/downloadFile', function(){
-        if (request()->data == 'comment') {
-            return response()->download(public_path('uploads/comment_resource/'.request()->url)); // Downloading comment file
-        }else{
-            return response()->download(public_path('uploads/post_resource/'.request()->url)); // Downloading Post file
-        }
+
+    // ============ | Downloading post files | ===================
+    Route::get('project/{id}/post-downloadFile/{file}', function($id,$file){
+        $ext = explode('.',$file);
+        $headers = [ 'content-Type' => 'application/'.$ext[1] ];
+        return response()->download(public_path('uploads/post_resource/'.$file)); // Downloading Post file
     });
+    // ============= | Downloading comment files | =================
+    Route::get('project/{id}/comment-downloadFile/{file}', function($id,$file){ 
+        $ext = explode('.',$file);
+        $headers = [ 'content-Type' => 'application/'.$ext[1] ];
+        return response()->download(public_path('uploads/comment_resource/'.$file)); // Downloading comment file
+     });
+     
     Route::post('project/{id}/deleteFile','projectPostController@deleteResource'); // Deleting Post Resource
     Route::post('project/{id}/deleteCommentFile','commentController@deleteResource'); // Deleting comment Resource
     Route::post('project/{id}/createComment','commentController@addComment'); // Adding comment

@@ -27,7 +27,7 @@
                                     <div class="file-name">
                                         <p class="mb-0 text-muted">{{file.file}}</p>
                                         <div>
-                                            <i class="fa fa-download font-120" @click="downloadFile(file.file, 'post')"></i>
+                                            <a :href="project_id + '/post-downloadFile/'+file.file" title="download"><i class="fa fa-download"></i></a>
                                         </div>
                                     </div>
                                 </a>
@@ -65,8 +65,8 @@
                                                     <div class="file-name">
                                                         <p class="mb-0 text-muted">{{file.file}}</p>
                                                         <div>
-                                                            <i class="fa fa-download font-120" @click="downloadFile(file.file, 'comment')"></i>
-                                                            <i v-if="user_id === file.user_id" class="fa fa-trash pull-right" @click="deleteFile(file.id, file.file)"></i>
+                                                            <a :href="project_id + '/comment-downloadFile/'+file.file"><i class="fa fa-download font-120"></i></a>
+                                                            <a href="#" v-if="user_id === file.user_id" class="fa fa-trash" @click.prevent="deleteFile(file.id, file.file)"></a>
                                                         </div>
                                                     </div>
                                                 </a>

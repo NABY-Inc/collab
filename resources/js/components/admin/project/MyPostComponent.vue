@@ -20,10 +20,9 @@
                                 </div>
                                 <div class="file-name">
                                     <p class="mb-0 text-muted">{{file.file}}</p>
-                                    <!-- <small>PCS File</small> -->
                                     <div class="mt-3">
-                                        <i class="fa fa-download font-120" @click="downloadFile(file.file, 'post')"></i>
-                                        <i class="fa fa-trash pull-right" @click="deleteFile(file.id, file.file)"></i>
+                                        <a :href="project_id + '/post-downloadFile/'+file.file" title="download"><i class="fa fa-download"></i></a>
+                                        <a href="#" @click.prevent="deleteFile(file.id, file.file)" title="delete"><i class="fa fa-trash"></i></a>
                                     </div>
                                 </div>
                             </a>
@@ -72,19 +71,19 @@
                                                         </a><br>
                                                         <a v-if="user_id === file.user_id" href="#" class="fa fa-trash mt-2" @click="deleteFile(file.id, file.file)"> Delete</a>
                                                     </div>
-                                                <div class="file_folder responsive mt-10" v-else>
-                                                    <a href="javascript:void(0);">
-                                                        <div class="icon">
-                                                            <i class="fa fa-file-o text-success"></i>
-                                                        </div>
-                                                        <div class="file-name">
-                                                            <p class="mb-0 text-muted">{{file.file}}</p>
-                                                            <div>
-                                                                <i class="fa fa-download font-120" @click="downloadFile(file.file, 'comment')"></i>
+                                                    <div class="file_folder responsive mt-10" v-else>
+                                                        <a href="javascript:void(0);">
+                                                            <div class="icon">
+                                                                <i class="fa fa-file-o text-success"></i>
                                                             </div>
-                                                        </div>
-                                                    </a>
-                                                </div>
+                                                            <div class="file-name">
+                                                                <p class="mb-0 text-muted">{{file.file}}</p>
+                                                                <div>
+                                                                    <a :href="project_id + '/comment-downloadFile/'+file.file"><i class="fa fa-download font-120"></i></a>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
 
                                                 </div>
                                             </div>

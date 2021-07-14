@@ -16,11 +16,10 @@ class projectController extends Controller
             array_push($projects, $key->project_id);
         }
         // Finding on-Going projects
-        $ongoing_projects   = \App\Project::whereIn('id', $projects)->where('dateFrom', '<', \Carbon\Carbon::now())->orderByDesc('id')->paginate(4);
+        $ongoing_projects   = \App\Project::whereIn('id', $projects)->whereDate('dateFrom', '<=', \Carbon\Carbon::now())->orderByDesc('id')->paginate(4);
 
         // Finding Upcoming projects
-        $upcoming_projects  = \App\Project::whereIn('id', $projects)->where('dateFrom', '>', \Carbon\Carbon::now())->orderByDesc('id')->paginate(8);
-
+        $upcoming_projects  = \App\Project::whereIn('id', $projects)->whereDate('dateFrom', '>', \Carbon\Carbon::now())->orderByDesc('id')->paginate(8);
         //Returning project page per role
         if (auth()->user()->role == 1){
             return view('admin.project.index', compact('ongoing_projects','upcoming_projects'));
@@ -49,7 +48,11 @@ class projectController extends Controller
             $project_id = $data->id;
             // Keeping Project members
             $members = array_map('intval', explode(',', $request->team));
-            $members = array_unique($members); 
+            $members = array_unique($members);
+            // Adding project host to project if not selected
+            if (!in_array(auth()->user()->id, $members)) {
+                array_push($members,auth()->user()->id);
+            }
             // Looping through members to store for project members
             foreach ($members as $key => $member) {
                 \App\ProjectMember::create(['project_id' => $project_id, 'user_id' => $member]);

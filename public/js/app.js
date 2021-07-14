@@ -2707,7 +2707,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
@@ -43093,35 +43092,51 @@ var render = function() {
                                                   "div",
                                                   { staticClass: "mt-3" },
                                                   [
-                                                    _c("i", {
-                                                      staticClass:
-                                                        "fa fa-download font-120",
-                                                      on: {
-                                                        click: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.downloadFile(
+                                                    _c(
+                                                      "a",
+                                                      {
+                                                        attrs: {
+                                                          href:
+                                                            _vm.project_id +
+                                                            "/post-downloadFile/" +
                                                             file.file,
-                                                            "post"
-                                                          )
+                                                          title: "download"
                                                         }
-                                                      }
-                                                    }),
+                                                      },
+                                                      [
+                                                        _c("i", {
+                                                          staticClass:
+                                                            "fa fa-download"
+                                                        })
+                                                      ]
+                                                    ),
                                                     _vm._v(" "),
-                                                    _c("i", {
-                                                      staticClass:
-                                                        "fa fa-trash pull-right",
-                                                      on: {
-                                                        click: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.deleteFile(
-                                                            file.id,
-                                                            file.file
-                                                          )
+                                                    _c(
+                                                      "a",
+                                                      {
+                                                        attrs: {
+                                                          href: "#",
+                                                          title: "delete"
+                                                        },
+                                                        on: {
+                                                          click: function(
+                                                            $event
+                                                          ) {
+                                                            $event.preventDefault()
+                                                            return _vm.deleteFile(
+                                                              file.id,
+                                                              file.file
+                                                            )
+                                                          }
                                                         }
-                                                      }
-                                                    })
+                                                      },
+                                                      [
+                                                        _c("i", {
+                                                          staticClass:
+                                                            "fa fa-trash"
+                                                        })
+                                                      ]
+                                                    )
                                                   ]
                                                 )
                                               ]
@@ -43451,21 +43466,24 @@ var render = function() {
                                                                             "div",
                                                                             [
                                                                               _c(
-                                                                                "i",
+                                                                                "a",
                                                                                 {
-                                                                                  staticClass:
-                                                                                    "fa fa-download font-120",
-                                                                                  on: {
-                                                                                    click: function(
-                                                                                      $event
-                                                                                    ) {
-                                                                                      return _vm.downloadFile(
-                                                                                        file.file,
-                                                                                        "comment"
-                                                                                      )
-                                                                                    }
+                                                                                  attrs: {
+                                                                                    href:
+                                                                                      _vm.project_id +
+                                                                                      "/comment-downloadFile/" +
+                                                                                      file.file
                                                                                   }
-                                                                                }
+                                                                                },
+                                                                                [
+                                                                                  _c(
+                                                                                    "i",
+                                                                                    {
+                                                                                      staticClass:
+                                                                                        "fa fa-download font-120"
+                                                                                    }
+                                                                                  )
+                                                                                ]
                                                                               )
                                                                             ]
                                                                           )
@@ -43754,18 +43772,24 @@ var render = function() {
                                                 ),
                                                 _vm._v(" "),
                                                 _c("div", [
-                                                  _c("i", {
-                                                    staticClass:
-                                                      "fa fa-download font-120",
-                                                    on: {
-                                                      click: function($event) {
-                                                        return _vm.downloadFile(
+                                                  _c(
+                                                    "a",
+                                                    {
+                                                      attrs: {
+                                                        href:
+                                                          _vm.project_id +
+                                                          "/post-downloadFile/" +
                                                           file.file,
-                                                          "post"
-                                                        )
+                                                        title: "download"
                                                       }
-                                                    }
-                                                  })
+                                                    },
+                                                    [
+                                                      _c("i", {
+                                                        staticClass:
+                                                          "fa fa-download"
+                                                      })
+                                                    ]
+                                                  )
                                                 ])
                                               ]
                                             )
@@ -44048,21 +44072,24 @@ var render = function() {
                                                                         "div",
                                                                         [
                                                                           _c(
-                                                                            "i",
+                                                                            "a",
                                                                             {
-                                                                              staticClass:
-                                                                                "fa fa-download font-120",
-                                                                              on: {
-                                                                                click: function(
-                                                                                  $event
-                                                                                ) {
-                                                                                  return _vm.downloadFile(
-                                                                                    file.file,
-                                                                                    "comment"
-                                                                                  )
-                                                                                }
+                                                                              attrs: {
+                                                                                href:
+                                                                                  _vm.project_id +
+                                                                                  "/comment-downloadFile/" +
+                                                                                  file.file
                                                                               }
-                                                                            }
+                                                                            },
+                                                                            [
+                                                                              _c(
+                                                                                "i",
+                                                                                {
+                                                                                  staticClass:
+                                                                                    "fa fa-download font-120"
+                                                                                }
+                                                                              )
+                                                                            ]
                                                                           ),
                                                                           _vm._v(
                                                                             " "
@@ -44070,14 +44097,19 @@ var render = function() {
                                                                           _vm.user_id ===
                                                                           file.user_id
                                                                             ? _c(
-                                                                                "i",
+                                                                                "a",
                                                                                 {
                                                                                   staticClass:
-                                                                                    "fa fa-trash pull-right",
+                                                                                    "fa fa-trash",
+                                                                                  attrs: {
+                                                                                    href:
+                                                                                      "#"
+                                                                                  },
                                                                                   on: {
                                                                                     click: function(
                                                                                       $event
                                                                                     ) {
+                                                                                      $event.preventDefault()
                                                                                       return _vm.deleteFile(
                                                                                         file.id,
                                                                                         file.file

@@ -8,7 +8,7 @@
 
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
 
-    <title>:: Soccer :: Login</title>
+    <title>Project Colaboration System :: Login</title>
 
     <!-- Bootstrap Core and vandor -->
     <link rel="stylesheet" href="{{asset('public/assets/plugins/bootstrap/css/bootstrap.min.css')}}" />

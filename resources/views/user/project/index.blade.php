@@ -107,7 +107,7 @@
                                                             <td><img src="{{asset('public/uploads/users/'.$project->user->img)}}" alt="Avatar" class="w30 rounded-circle mr-2"> <span>{{$project->user->name}}</span></td>
                                                             <td>{{$project->title}}</td>
                                                             <td>{{$project->user_id == auth()->user()->id ? $project->code : 'Ask project owner'}}</td>
-                                                            <td><span>{{\Carbon\carbon::parse($project->dateFrom)->toFormattedDateString()}}</span></td>
+                                                            <td><span>{{$project->dateFrom}}</span></td>
                                                             <td><span class="text-warning">{{$project->priority}}</span></td>
                                                         </tr>
                                                     @endforeach

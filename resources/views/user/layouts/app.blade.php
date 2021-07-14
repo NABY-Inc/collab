@@ -39,8 +39,8 @@
                     <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="{{asset('public/uploads/users/'.auth()->user()->img)}}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
                     {{-- <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o" data-toggle="tooltip" data-placement="right" title="Colleagues"></i></a> --}}
                     {{-- <a href="app-chat.html"  class="nav-link icon xs-hide"><i class="fa fa-laptop" data-toggle="tooltip" data-placement="right" title="My site"></i></a> --}}
-                    <a href="app-filemanager.html"  class="nav-link icon app_file xs-hide"><i class="fa fa-folder-o" data-toggle="tooltip" data-placement="right" title="Repositories"></i></a>
-                    <a href="javascript:void(0)" class="nav-link icon theme_btn xs-hide"><i class="fa fa-support" data-toggle="tooltip" data-placement="right" title="Help"></i></a>
+                    {{-- <a href="app-filemanager.html"  class="nav-link icon app_file xs-hide"><i class="fa fa-folder-o" data-toggle="tooltip" data-placement="right" title="Repositories"></i></a> --}}
+                    {{-- <a href="javascript:void(0)" class="nav-link icon theme_btn xs-hide"><i class="fa fa-support" data-toggle="tooltip" data-placement="right" title="Help"></i></a> --}}
                 </div>
             </div>
             <div class="hright">
@@ -315,7 +315,7 @@
                         <i class="fa fa-check-square-o"></i><span>Tasks</span>
                     </a>
                 </li> --}}
-                <li class="g_heading">App</li>
+                {{-- <li class="g_heading">App</li> --}}
                 {{-- <li>
                     <a href="app-chat.html">
                         <i class="fa fa-laptop"></i><span>My Site</span>
@@ -326,22 +326,22 @@
                         <i class="fa fa-address-book"></i><span>Colleagues</span>
                     </a>
                 </li> --}}
-                <li>
+                {{-- <li>
                     <a href="app-filemanager.html">
                         <i class="fa fa-folder"></i><span>Repositories</span>
                     </a>
-                </li>
+                </li> --}}
                 {{-- <li>
                     <a href="app-setting.html">
                         <i class="fa fa-gear"></i><span>Setting</span>
                     </a>
                 </li> --}}
-                <li class="g_heading">Support</li>
+                {{-- <li class="g_heading">Support</li>
                 <li>
                     <a href="javascript:void(0)">
                         <i class="fa fa-support"></i><span>Need Help?</span>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </nav>
     </div>
@@ -357,7 +357,7 @@
                     </div>
                     <div class="right">
                         <div class="notification d-flex">
-                            <div class="dropdown d-flex">
+                            {{-- <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-envelope"></i><span class="badge badge-success nav-unread"></span></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                     <ul class="right_chat list-unstyled w350 p-0">
@@ -409,8 +409,8 @@
                                 <div class="dropdown-divider"></div>
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
                                 </div>
-                            </div>
-                            <div class="dropdown d-flex">
+                            </div> --}}
+                            {{-- <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                     <ul class="list-unstyled feeds_widget">
@@ -453,7 +453,7 @@
                                 <div class="dropdown-divider"></div>
                                     <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="dropdown d-flex">
                                 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
