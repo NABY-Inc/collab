@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="{{asset('assets/plugins/bootstrap/css/bootstrap.min.css')}}" />
 
     <!-- Core css -->
-    <link rel="stylesheet" href="{{asset('assets/css/main.css')}}"/>
-    <link rel="stylesheet" href="{{asset('assets/css/theme1.css')}}"/>
-    <link rel="stylesheet" href="{{asset('assets/css/font-awesome.min.css')}}"/>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+    <link rel="stylesheet" href="assets/css/theme1.css"/>
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css"/>
 
 </head>
 <body class="font-montserrat">
