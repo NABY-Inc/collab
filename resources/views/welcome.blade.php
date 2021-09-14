@@ -11,7 +11,7 @@
     <title>Project Colaboration System :: Login</title>
 
     <!-- Bootstrap Core and vandor -->
-    <link rel="stylesheet" href="{{asset('assets/plugins/bootstrap/css/bootstrap.min.css')}}" />
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css" />
 
     <!-- Core css -->
     <link rel="stylesheet" href="assets/css/main.css"/>
@@ -76,8 +76,8 @@
     <div class="auth_right full_img"></div>
 </div>
 
-<script src="{{asset('assets/bundles/lib.vendor.bundle.js')}}"></script>
-<script src="{{asset('assets/js/core.js')}}"></script>
+<script src="assets/bundles/lib.vendor.bundle.js"></script>
+<script src="assets/js/core.js"></script>
 </body>
 
 </html>
