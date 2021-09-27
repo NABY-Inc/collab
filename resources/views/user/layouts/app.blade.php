@@ -34,7 +34,7 @@
     <div id="header_top" class="header_top">
         <div class="container">
             <div class="hleft">
-                <a class="header-brand"><i class="fa fa-cogs brand-logo"></i></a>
+                <a class="header-brand"><i class="fa fa-check brand-logo"></i></a>
                 <div class="dropdown">
                     <a href="javascript:void(0)" class="nav-link user_btn"><img class="avatar" src="{{asset('uploads/users/'.auth()->user()->profile)}}" alt="" data-toggle="tooltip" data-placement="right" title="User Menu"/></a>
                     {{-- <a href="app-contact.html"  class="nav-link icon xs-hide"><i class="fa fa-id-card-o" data-toggle="tooltip" data-placement="right" title="Colleagues"></i></a> --}}
@@ -184,11 +184,11 @@
             </div>
             <hr>
             <div class="form-group">
-                <label class="d-block">Storage <span class="float-right">77%</span></label>
+                {{-- <label class="d-block">Storage <span class="float-right">77%</span></label>
                 <div class="progress progress-sm">
                     <div class="progress-bar" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 77%;"></div>
                 </div>
-                <button type="button" class="btn btn-primary btn-block mt-3">Upgrade Storage</button>
+                <button type="button" class="btn btn-primary btn-block mt-3">Upgrade Storage</button> --}}
             </div>
         </div>
     </div>
@@ -222,21 +222,29 @@
             <a><img class="card-profile-img" src="{{asset('uploads/users/'.auth()->user()->profile)}}" alt=""></a>
             <h6 class="mb-0">{{auth()->user()->name}}</h6>
             <span>{{auth()->user()->email}}</span>
-            <div class="d-flex align-items-baseline mt-3">
+            <a class="btn btn-primary btn-block mt-3" href="{{ route('logout') }}"
+                onclick="event.preventDefault(); 
+                document.getElementById('logout-form-user').submit();">
+                <i class="fa fa-lock"></i> Sign out
+            </a>
+            <form id="logout-form-user" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            {{-- <div class="d-flex align-items-baseline mt-3">
                 <h3 class="mb-0 mr-2">9.8</h3>
                 <p class="mb-0"><span class="text-success">1.6% <i class="fa fa-arrow-up"></i></span></p>
-            </div>
-            <div class="progress progress-xs">
+            </div> --}}
+            {{-- <div class="progress progress-xs">
                 <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
                 <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                 <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
                 <div class="progress-bar bg-orange" role="progressbar" style="width: 5%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                 <div class="progress-bar bg-indigo" role="progressbar" style="width: 13%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-        <h6 class="text-uppercase font-10 mt-1">Performance Score</h6>
-        <hr>
-        <p>Activity</p>
-            <ul class="new_timeline">
+            </div> --}}
+        {{-- <h6 class="text-uppercase font-10 mt-1">Performance Score</h6> --}}
+        {{-- <hr> --}}
+        {{-- <p>Activity</p> --}}
+            {{-- <ul class="new_timeline">
                 <li>
                     <div class="bullet pink"></div>
                     <div class="time">11:00am</div>
@@ -290,7 +298,7 @@
                         <h4>Go to Home</h4>
                     </div>
                 </li>
-            </ul>
+            </ul> --}}
         </div>
     </div>
 
